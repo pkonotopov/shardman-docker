@@ -11,7 +11,9 @@ After cloning shardman-docker repo please execute these steps.
 
 ### 1.1 Up
 
-`docker-compose up -d` - this command bring up two containers: etcd and shardman in simple configuration (without additional nodes and replicas).
+`docker-compose up -d`
+
+This command bring up two containers: `etcd` and `shardman` in simple configuration without additional nodes, replicas and monitor.
 
 ### 1.2 Initialization of cluster configuration
 `docker exec shardman_shard_1 shardman-ladle init -f /etc/shardman/spec.json`
@@ -56,3 +58,16 @@ Containers ID's are the hostnames of new containers, so add new hosts to the clu
 
 ### 3.2 Remove containers
 `docker-compose up --scale shard=1 --no-recreate -d`
+
+## 4. Create cluster with shard replicas
+
+If you want to create cluster with replicas and monitors you should change some parameters in the specification file [spec.json](spec.json):
+
+```
+"Repfactor": 1
+"MonitorsNum": 1
+```
+
+Then at the Up step (1.1) run cluster with minimal nodes count 2: `docker-compose up --scale shard=2 -d`.
+
+At the Initialization step (1.2) upload configuration file into etcd k/v store.
