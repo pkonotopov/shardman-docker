@@ -14,11 +14,15 @@ After cloning shardman-docker repo please execute these steps.
 `docker-compose up -d` - this command bring up two containers: etcd and shardman in simple configuration (without additional nodes and replicas).
 
 ### 1.2 Initialization of cluster configuration
-`docker exec shardman_shard_1 shardman-ladle init -f /etc/shardman/spec.json` - this command uploads initial configuraion into the etcd storage.
+`docker exec shardman_shard_1 shardman-ladle init -f /etc/shardman/spec.json`
+
+This command uploads initial configuraion into the etcd storage.
 
 ### 1.3 Get name of the first shardman node
 `docker ps --filter "label=com.shardman.role=shard" -aq`
-The expected output should be smth like this: `2ca4e1984120`
+
+The expected output should be like this: 
+`2ca4e1984120`
 
 #### 1.4 Add first node to the cluster
 `docker exec shardman_shard_1 shardman-ladle addnodes -n 2ca4e1984120`
