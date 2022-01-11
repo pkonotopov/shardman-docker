@@ -77,7 +77,9 @@ Finally, add two created nodes to the cluster.
 Get nodes names: `docker ps --filter "label=com.shardman.role=shard" -aq`
 
 The expected output should be: 
-```2ca4e1984120
-5c42f00bca5a```
+```
+2ca4e1984120
+5c42f00bca5a
+```
 
 Add nodes: `docker exec shardman_shard_1 shardman-ladle addnodes -n 2ca4e1984120,5c42f00bca5a`.
