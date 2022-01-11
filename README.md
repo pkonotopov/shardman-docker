@@ -20,7 +20,7 @@ The expected output should be smth like this: `2ca4e1984120`
 #### 1.4 Add first node to the cluster
 `docker exec shardman_shard_1 shardman-ladle addnodes -n 2ca4e1984120`
 
-## 2. Scale up the cluster
+## 2. Scale up cluster
 ### 2.1 Add new containers
 `docker-compose up --scale shard=4 --no-recreate -d`
 
@@ -40,7 +40,7 @@ Containers ID's are the hostnames of new containers, so add new hosts to the clu
 
 `docker exec shardman_shard_1 shardman-ladle addnodes -n 5c42f00bca5a,d500d2c70b3e,ba2e956b5095`
 
-## 3. Scale down the cluster
+## 3. Scale down cluster
 
 ### 3.1 Remove nodes from the cluster configuration:
 `docker exec shardman_shard_1 shardman-ladle rmnodes -n 5c42f00bca5a,d500d2c70b3e,ba2e956b5095`
