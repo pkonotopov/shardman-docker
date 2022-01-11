@@ -1,9 +1,9 @@
 # Shardman docker compose.
 
-Shardman documentation: [http://repo.postgrespro.ru/doc/pgprosm/14beta2.1/en/html](http://repo.postgrespro.ru/doc/pgprosm/14beta2.1/en/html)
-Clone repo: `git clone git@github.com:pkonotopov/shardman-docker.git shardman`
-Limitations: Linux systems only. No MacosX and WSL supported.
-Inital cluster config in [spec.json](spec.json) file: one node, no replication, no monitor. 
+* Shardman documentation: [http://repo.postgrespro.ru/doc/pgprosm/14beta2.1/en/html](http://repo.postgrespro.ru/doc/pgprosm/14beta2.1/en/html)
+* Clone repo: `git clone git@github.com:pkonotopov/shardman-docker.git shardman`
+* Limitations: Linux systems only. No MacosX and WSL supported.
+* Inital cluster config in [spec.json](spec.json) file: one node, no replication, no monitor. 
 
 After cloning shardman-docker repo please execute these steps.
 
