@@ -71,3 +71,13 @@ If you want to create cluster with replicas and monitors you should change some 
 Then at the Up step (1.1) run cluster with minimal nodes count 2: `docker-compose up --scale shard=2 -d`.
 
 At the Initialization step (1.2) upload configuration file into etcd k/v store.
+
+Finally, add two created nodes to the cluster.
+
+Get nodes names: `docker ps --filter "label=com.shardman.role=shard" -aq`
+
+The expected output should be: 
+```2ca4e1984120
+5c42f00bca5a```
+
+Add nodes: `docker exec shardman_shard_1 shardman-ladle addnodes -n 2ca4e1984120,5c42f00bca5a`.
