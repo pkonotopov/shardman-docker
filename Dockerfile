@@ -10,18 +10,19 @@ ENV PG_MAJOR=${PG_MAJOR}
 ENV CLUSTER_NAME=${CLUSTER_NAME}
 
 ENV PGDATA="/var/lib/pgpro/sdm-${PG_MAJOR}/data" \
-    PATH="/opt/pgpro/sdm-${PG_MAJOR}/bin:${PATH}"
+    PATH="/opt/pgpro/sdm-${PG_MAJOR}/bin:${PATH}" \
+    DEBIAN_FRONTEND=noninteractive
 
-RUN set -ex \
-    && export DEBIAN_FRONTEND=noninteractive \
-    && ulimit -s unlimited \
-    && apt-get update -y \
-    && apt-get install -y gnupg curl \
+SHELL ["/bin/bash", "-exo", "pipefail", "-c"]
+
+RUN ulimit -s unlimited \
     && printf "APT::Install-Recommends '0';\nAPT::Install-Suggests '0';" > /etc/apt/apt.conf.d/01norecommend \
+    && apt-get update -y \
+    && apt-get install -y --no-install-recommends gnupg curl \
     && printf "deb [arch=amd64] http://repo.postgrespro.ru/pgprosm-14/ubuntu/ focal main" > /etc/apt/sources.list.d/shardman.list \
     && curl -fsSL http://repo.postgrespro.ru/pgprosm-14/keys/GPG-KEY-POSTGRESPRO | apt-key add - \
     && apt-get update -y \
-    && apt-get install -y \
+    && apt-get install -y --no-install-recommends \
         systemd-sysv libicu66 libev4 libpam0g libssl1.1 libxml2 tzdata \
         ssl-cert locales dbus-x11 libipc-run-perl \
         libreadline8 pkg-config zlib1g \

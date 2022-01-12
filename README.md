@@ -83,3 +83,41 @@ The expected output should be:
 ```
 
 Add nodes: `docker exec shardman_shard_1 shardman-ladle addnodes -n 2ca4e1984120,5c42f00bca5a`.
+
+## 4. Expose ports to cluster nodes with Traefik (Load Balancing, port 8432)
+
+Create cluster with predifined count of nodes:
+
+`docker-compose -f docker-compose-traefik.yml up --scale shard=4`
+
+Create configuration and add nodes to the cluster:
+
+<pre>
+$ docker exec shardman_shard_1 shardman-ladle init -f /etc/shardman/spec.json
+
+$ docker ps --filter "label=com.shardman.role=shard" -a --format "table {{.ID}}"
+
+1b07419a17f9
+e00a2fa349e1
+dbcf889376ad
+679a205b23ef
+
+$ docker exec shardman_shard_1 shardman-ladle addnodes -n 1b07419a17f9,e00a2fa349e1,dbcf889376ad,679a205b23ef
+
+2022-01-12T17:47:02.490Z	INFO	ladle/ladle.go:372	Checking if bowls on all nodes have applied current cluster configuration
+2022-01-12T17:47:02.492Z	INFO	ladle/ladle.go:399	Initting Stolon instances...
+2022-01-12T17:47:02.594Z	INFO	ladle/ladle.go:483	Waiting for Stolon daemons to start... make sure bowl daemons are running on the nodes
+2022-01-12T17:47:38.777Z	INFO	ladle/ladle.go:559	Adding repgroups...
+2022-01-12T17:47:51.325Z	INFO	ladle/ladle.go:586	Successfully added nodes 1b07419a17f9, e00a2fa349e1, dbcf889376ad, 679a205b23ef to the cluster
+
+$ psql -h 127.0.0.1 -p 8432 -U postgres
+
+psql (12.5, server 14.0)
+WARNING: psql major version 12, server major version 14.
+         Some psql features might not work.
+Type "help" for help.
+
+postgres=#
+</pre>
+
+Traefik uses round robin to balance connections to cluster nodes. So every new connect attempt connects client to next node in cluster.

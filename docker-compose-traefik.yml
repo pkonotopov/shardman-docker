@@ -1,0 +1,68 @@
+version: "3.7"
+
+services:
+  traefik:
+    image: traefik:v2.5.6
+    hostname: traefik
+    command:
+      - --api.insecure=true
+      - --providers.docker=true
+      - --providers.docker.swarmmode=false
+      - --providers.docker.watch=true
+      - --entrypoints.web=true
+      - --entrypoints.web.address=:80
+      - --entrypoints.postgres=true
+      - --entrypoints.postgres.address=:5432
+      - --providers.docker.exposedbydefault=true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 80:80
+      - 8080:8080
+      - 8432:5432
+    labels:
+      traefik.enable: 'true'
+      traefik.http.routers.api.rule: Host(`0.0.0.0`)
+      traefik.http.routers.api.service: api@internal
+      traefik.http.services.traefik.loadbalancer.server.port: 888
+      traefik.http.routers.traefik.entrypoints: web
+      traefik.http.routers.traefik.middlewares: traefik-auth
+      traefik.http.middlewares.traefik-auth.basicauth.users: admin:$$apr1$$T4Yzaz9/$$hREsIh25j.ed8fKr95laE1
+  etcd:
+    hostname: etcd
+    image: quay.io/coreos/etcd:v3.5.1
+    labels:
+      com.shardman.role: etcd
+    command:
+      - '/usr/local/bin/etcd'
+      - '--name=etcd'
+      - '--initial-advertise-peer-urls=http://etcd:2380'
+      - '--listen-peer-urls=http://0.0.0.0:2380'
+      - '--advertise-client-urls=http://etcd:2379'
+      - '--listen-client-urls=http://0.0.0.0:2379'
+      - '--initial-cluster=etcd=http://etcd:2380'
+  shard: &shard
+    image: quay.io/kakoka/sdm-systemd:b05
+    labels:
+      com.shardman.role: shard
+      traefik.enable: 'true'
+      traefik.tcp.routers.postgres.rule: HostSNI(`*`)
+      traefik.tcp.routers.postgres.service: postgres@docker
+      traefik.tcp.services.postgres.loadbalancer.server.port: 5432
+      traefik.tcp.routers.postgres.entrypoints: postgres
+    cap_add:
+      - SYS_ADMIN
+    tmpfs:
+      - /run
+      - /run/lock
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - $PWD/spec.json:/etc/shardman/spec.json:ro
+      - $PWD/bowl-cluster0.env:/etc/shardman/bowl-cluster0.env:ro
+    environment: &ETCD
+      CLUSTER_NAME: "cluster0"
+      SDM_CLUSTER_NAME: "cluster0"
+      SDM_LOG_LEVEL: "info"
+      SDM_STORE_ENDPOINTS: "http://etcd:2379"
+    expose:
+      - 5432
