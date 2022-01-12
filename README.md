@@ -84,7 +84,7 @@ The expected output should be:
 
 Add nodes: `docker exec shardman_shard_1 shardman-ladle addnodes -n 2ca4e1984120,5c42f00bca5a`.
 
-## 4. Expose ports to cluster nodes with Traefik (Load Balancing, port 8432)
+## 5. Expose ports to cluster nodes with Traefik (Load Balancing, port 8432)
 
 Create cluster with predifined count of nodes:
 
