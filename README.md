@@ -121,3 +121,5 @@ postgres=#
 </pre>
 
 Traefik uses round robin to balance connections to cluster nodes. So every new connect attempt connects client to next node in cluster.
+
+Login into Traefik UI - `http://localhost:8080`. Login/password: admin/passsword.
