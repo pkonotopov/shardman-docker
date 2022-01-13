@@ -6,13 +6,14 @@ services:
     hostname: traefik
     command:
       - --api.insecure=true
+      - --api.dashboard=true
       - --providers.docker=true
       - --providers.docker.swarmmode=false
       - --providers.docker.watch=true
       - --entrypoints.web=true
       - --entrypoints.web.address=:80
-      - --entrypoints.postgres=true
-      - --entrypoints.postgres.address=:5432
+      - --entrypoints.shard-shardman=true
+      - --entrypoints.shard-shardman.address=:5432
       - --providers.docker.exposedbydefault=true
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -46,10 +47,10 @@ services:
     labels:
       com.shardman.role: shard
       traefik.enable: 'true'
-      traefik.tcp.routers.postgres.rule: HostSNI(`*`)
-      traefik.tcp.routers.postgres.service: postgres@docker
-      traefik.tcp.services.postgres.loadbalancer.server.port: 5432
-      traefik.tcp.routers.postgres.entrypoints: postgres
+      traefik.tcp.routers.shard-shardman.rule: HostSNI(`*`)
+      traefik.tcp.routers.shard-shardman.service: shard-shardman@docker
+      traefik.tcp.services.shard-shardman.loadbalancer.server.port: 5432
+      traefik.tcp.routers.shard-shardman.entrypoints: shard-shardman
     cap_add:
       - SYS_ADMIN
     tmpfs:

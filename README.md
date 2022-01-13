@@ -120,6 +120,13 @@ Type "help" for help.
 postgres=#
 </pre>
 
-Traefik uses round robin to balance connections to cluster nodes. So every new connect attempt connects client to next node in cluster.
+Scale up and scale down is the similar as described above.
+
+Scale up: `docker-compose -f docker-compose-traefik.yml up --scale shard=8`, then get nodes names and add them to Shardman cluster. 
+Scale down: firstly remove nodes from the cluster, then run `docker-compose -f docker-compose-traefik.yml up --scale shard=2`.
+
+Nodes automatically adding and removing from/to Traefik Load Balancer.
+
+Traefik uses round robin to balance connections to cluster nodes. So every new connection attempt connects client to next node in cluster.
 
 Login into Traefik UI - `http://localhost:8080`. Login/password: admin/passsword.
