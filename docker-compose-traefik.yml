@@ -14,7 +14,7 @@ services:
       - --entrypoints.web.address=:80
       - --entrypoints.shard-shardman=true
       - --entrypoints.shard-shardman.address=:5432
-      - --providers.docker.exposedbydefault=true
+      - --providers.docker.exposedbydefault=false
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
