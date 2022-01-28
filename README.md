@@ -3,7 +3,7 @@
 * Shardman documentation: [http://repo.postgrespro.ru/doc/pgprosm/14beta2.1/en/html](http://repo.postgrespro.ru/doc/pgprosm/14beta2.1/en/html)
 * Clone repo: `git clone git@github.com:pkonotopov/shardman-docker.git shardman`
 * Limitations: Linux systems only. No MacosX and WSL supported.
-* Inital cluster config in [spec.json](spec.json) file: one node, no replication, no monitor. 
+* Inital cluster config in [spec.json](conf/spec.json) file: one node, no replication, no monitor. 
 
 After cloning shardman-docker repo please execute these steps.
 
@@ -61,7 +61,7 @@ Containers ID's are the hostnames of new containers, so add new hosts to the clu
 
 ## 4. Create cluster with shard replicas
 
-If you want to create cluster with replicas and monitors you should change some parameters in the specification file [spec.json](spec.json):
+If you want to create cluster with replicas and monitors you should change some parameters in the specification file [spec.json](conf/spec.json):
 
 ```
 "Repfactor": 1
