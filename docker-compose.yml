@@ -17,7 +17,7 @@ services:
   shard:
     labels:
       - com.shardman.role=shard
-    image: quay.io/kakoka/sdm-systemd:b04
+    image: quay.io/kakoka/sdm-systemd:b07
     cap_add:
       - SYS_ADMIN
     tmpfs:
@@ -26,8 +26,11 @@ services:
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
       - $PWD/conf:/etc/shardman:ro
+      - pgdata:/var/lib/pgpro/
     environment: &ETCD
       CLUSTER_NAME: "cluster0"
       SDM_CLUSTER_NAME: "cluster0"
       SDM_LOG_LEVEL: "info"
       SDM_STORE_ENDPOINTS: "http://etcd:2379"
+volumes:
+  pgdata:

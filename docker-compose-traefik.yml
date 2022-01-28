@@ -43,7 +43,7 @@ services:
       - '--listen-client-urls=http://0.0.0.0:2379'
       - '--initial-cluster=etcd=http://etcd:2380'
   shard: &shard
-    image: quay.io/kakoka/sdm-systemd:b05
+    image: quay.io/kakoka/sdm-systemd:b07
     labels:
       com.shardman.role: shard
       traefik.enable: 'true'
@@ -66,3 +66,5 @@ services:
       SDM_STORE_ENDPOINTS: "http://etcd:2379"
     expose:
       - 5432
+volumes:
+  pgdata:

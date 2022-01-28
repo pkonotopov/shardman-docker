@@ -21,6 +21,9 @@ RUN ulimit -s unlimited \
     && apt-get install -y --no-install-recommends gnupg curl \
     && printf "deb [arch=amd64] http://repo.postgrespro.ru/pgprosm-14/ubuntu/ focal main" > /etc/apt/sources.list.d/shardman.list \
     && curl -fsSL http://repo.postgrespro.ru/pgprosm-14/keys/GPG-KEY-POSTGRESPRO | apt-key add - \
+    # For local builds only
+    # && printf "deb [arch=amd64] http://localrepo.l.postgrespro.ru/dev/pgprosm-14/ubuntu/ focal main" > /etc/apt/sources.list.d/shardman.list \
+    # && curl -fsSL http://localrepo.l.postgrespro.ru/keys/postgrespro/GPG-KEY-POSTGRESPRO | apt-key add - \
     && apt-get update -y \
     && apt-get install -y --no-install-recommends \
         systemd-sysv libicu66 libev4 libpam0g libssl1.1 libxml2 tzdata \
@@ -36,6 +39,7 @@ RUN ulimit -s unlimited \
     && mkdir -p /etc/systemd/system/systemd-logind.service.d /etc/shardman \
     && chown postgres:postgres /etc/shardman -R \
     && sed -i 's/var\/lib\/pgpro\/sdm-14\/data/etc\/shardman/g' /usr/lib/systemd/system/shardman-bowl\@.service \
+    && sed -i 's/\[Service\]/\[Service\]\nStandardOutput=journal+console/g' /usr/lib/systemd/system/shardman-* \
     && systemctl enable shardman-bowl@${CLUSTER_NAME} \
     && apt-get purge -y --allow-remove-essential --allow-change-held-packages \
     && apt-get autoremove -y \
