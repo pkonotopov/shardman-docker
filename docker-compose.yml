@@ -25,8 +25,7 @@ services:
       - /run/lock
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
-      - $PWD/spec.json:/etc/shardman/spec.json:ro
-      - $PWD/bowl-cluster0.env:/etc/shardman/bowl-cluster0.env:ro
+      - $PWD/conf:/etc/shardman:ro
     environment: &ETCD
       CLUSTER_NAME: "cluster0"
       SDM_CLUSTER_NAME: "cluster0"
