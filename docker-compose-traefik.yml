@@ -29,6 +29,7 @@ services:
       traefik.http.routers.traefik.entrypoints: web
       traefik.http.routers.traefik.middlewares: traefik-auth
       traefik.http.middlewares.traefik-auth.basicauth.users: admin:$$apr1$$T4Yzaz9/$$hREsIh25j.ed8fKr95laE1
+
   etcd:
     hostname: etcd
     image: quay.io/coreos/etcd:v3.5.1
@@ -42,6 +43,7 @@ services:
       - '--advertise-client-urls=http://etcd:2379'
       - '--listen-client-urls=http://0.0.0.0:2379'
       - '--initial-cluster=etcd=http://etcd:2380'
+
   shard: &shard
     image: quay.io/kakoka/sdm-systemd:b07
     labels:
@@ -57,6 +59,7 @@ services:
       - /run
       - /run/lock
     volumes:
+      # - pgdata:/var/lib/pgpro/sdm-14/data
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
       - $PWD/conf:/etc/shardman:ro
     environment: &ETCD
@@ -66,5 +69,6 @@ services:
       SDM_STORE_ENDPOINTS: "http://etcd:2379"
     expose:
       - 5432
-volumes:
-  pgdata:
+
+#volumes:
+#  pgdata:
