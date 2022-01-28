@@ -95,20 +95,13 @@ Create configuration and add nodes to the cluster:
 <pre>
 $ docker exec shardman_shard_1 shardman-ladle init -f /etc/shardman/spec.json
 
-$ docker ps --filter "label=com.shardman.role=shard" -a --format "table {{.ID}}"
+$ docker exec shardman_shard_1 shardman-ladle addnodes -n $(docker ps --filter "label=com.shardman.role=shard" -aq | awk '{aggr=aggr $1","} END {print aggr}' | head -c-2)
 
-1b07419a17f9
-e00a2fa349e1
-dbcf889376ad
-679a205b23ef
-
-$ docker exec shardman_shard_1 shardman-ladle addnodes -n 1b07419a17f9,e00a2fa349e1,dbcf889376ad,679a205b23ef
-
-2022-01-12T17:47:02.490Z	INFO	ladle/ladle.go:372	Checking if bowls on all nodes have applied current cluster configuration
-2022-01-12T17:47:02.492Z	INFO	ladle/ladle.go:399	Initting Stolon instances...
-2022-01-12T17:47:02.594Z	INFO	ladle/ladle.go:483	Waiting for Stolon daemons to start... make sure bowl daemons are running on the nodes
-2022-01-12T17:47:38.777Z	INFO	ladle/ladle.go:559	Adding repgroups...
-2022-01-12T17:47:51.325Z	INFO	ladle/ladle.go:586	Successfully added nodes 1b07419a17f9, e00a2fa349e1, dbcf889376ad, 679a205b23ef to the cluster
+2022-01-13T11:58:54.534Z	INFO	ladle/ladle.go:372	Checking if bowls on all nodes have applied current cluster configuration
+2022-01-13T11:58:54.536Z	INFO	ladle/ladle.go:399	Initting Stolon instances...
+2022-01-13T11:58:54.640Z	INFO	ladle/ladle.go:483	Waiting for Stolon daemons to start... make sure bowl daemons are running on the nodes
+2022-01-13T11:59:25.820Z	INFO	ladle/ladle.go:559	Adding repgroups...
+2022-01-13T11:59:39.252Z	INFO	ladle/ladle.go:586	Successfully added nodes b0e479b46867, 64f3d9a22fca, 7eab74c472a6, 9933d8eeef9a to the cluster
 
 $ psql -h 127.0.0.1 -p 8432 -U postgres
 
@@ -122,7 +115,7 @@ postgres=#
 
 Scale up and scale down is the similar as described above.
 
-Scale up: `docker-compose -f docker-compose-traefik.yml up --scale shard=8`, then get nodes names and add them to Shardman cluster. 
+Scale up: `docker-compose -f docker-compose-traefik.yml up --scale shard=8`, then get nodes names and add them to Shardman cluster.
 Scale down: firstly remove nodes from the cluster, then run `docker-compose -f docker-compose-traefik.yml up --scale shard=2`.
 
 Nodes automatically adding and removing from/to Traefik Load Balancer.
