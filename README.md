@@ -2,14 +2,18 @@
 
 * Shardman documentation: [http://repo.postgrespro.ru/doc/pgprosm/14beta2.1/en/html](http://repo.postgrespro.ru/doc/pgprosm/14beta2.1/en/html)
 * Clone repo: `git clone git@github.com:pkonotopov/shardman-docker.git shardman`
-* Limitations: Linux systems only. for MacosX see the chapter #6, WSL - not tested.
+* Limitations:
+  * Linux systems Ubuntu/Centos/Debian - testes
+  * For MacosX see the chapter #6, how to run docker with systemd inside
+  * WSL - not tested.
 * Inital cluster config in [spec.json](conf/spec.json) file: one node, no replication, no monitor. 
 
 After cloning shardman-docker repo please execute these steps.
 
-## 1. Launch Shardman in containers via docker-compose
+## 1. Simple launch Shardman in containers via docker-compose
 
 Docker compose project name located in [.env](.env) file:
+
 `COMPOSE_PROJECT_NAME=sdm`
 ### 1.1 Up
 
@@ -96,10 +100,10 @@ Create cluster with predifined count of nodes:
 
 Create configuration and add nodes to the cluster:
 
-- [spec.json](conf/spec.json) - simple Shardman cluster configuration without shard replication (HA)
-- [spec_replication.json](conf/spec_replication.json) simple Shardman cluster configuration without shard replication (HA)
+- [spec.json](conf/spec.json) - simple Shardman cluster configuration _without_ shard replication (HA)
+- [spec_replication.json](conf/spec_replication.json) simple Shardman cluster configuration _with_ shard replication (HA)
 
-Pick configuration you want. For the local deployment (i.e. docker compose) we recomend to use shards without replication.
+Pick configuration you want. For the local deployment (i.e. docker compose) we recomend to use shards _without_ replication.
 
 <pre>
 $ docker exec sdm_shard_1 shardman-ladle init -f /etc/shardman/spec.json
@@ -125,7 +129,13 @@ postgres=#
 Scale up and scale down is the similar as described above.
 
 Scale up: `docker-compose -f docker-compose-traefik.yml up --scale shard=8`, then get nodes names and add them to Shardman cluster.
-Scale down: firstly remove nodes from the cluster, then run `docker-compose -f docker-compose-traefik.yml up --scale shard=2`.
+Scale down: firstly remove nodes from the cluster
+
+```
+docker exec sdm_shard_1 shardman-ladle rmnodes -n node_name_1,node_name_2,...
+```
+
+, then run `docker-compose -f docker-compose-traefik.yml up --scale shard=2`.
 
 Nodes automatically adding and removing from/to Traefik Load Balancer.
 
