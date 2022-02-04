@@ -45,7 +45,7 @@ services:
       - '--initial-cluster=etcd=http://etcd:2380'
 
   shard: &shard
-    image: quay.io/kakoka/sdm-systemd:b07
+    image: quay.io/kakoka/sdm-systemd:b10
     labels:
       com.shardman.role: shard
       traefik.enable: 'true'
