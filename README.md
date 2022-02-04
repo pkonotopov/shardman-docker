@@ -93,9 +93,9 @@ Create cluster with predifined count of nodes:
 Create configuration and add nodes to the cluster:
 
 <pre>
-$ docker exec shardman_shard_1 shardman-ladle init -f /etc/shardman/spec.json
+$ docker exec shardman-docker-shard-1 shardman-ladle init -f /etc/shardman/spec.json
 
-$ docker exec shardman_shard_1 shardman-ladle addnodes -n $(docker ps --filter "label=com.shardman.role=shard" -aq | awk '{aggr=aggr $1","} END {print aggr}' | head -c-2)
+$ docker exec shardman-docker-shard-1 shardman-ladle addnodes -n $(docker ps --filter "label=com.shardman.role=shard" -aq | awk '{aggr=aggr $1","} END {print aggr}' | rev | cut -c 2- | rev)
 
 2022-01-13T11:58:54.534Z	INFO	ladle/ladle.go:372	Checking if bowls on all nodes have applied current cluster configuration
 2022-01-13T11:58:54.536Z	INFO	ladle/ladle.go:399	Initting Stolon instances...
