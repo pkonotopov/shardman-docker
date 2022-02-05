@@ -3,18 +3,19 @@
 * Shardman documentation: [http://repo.postgrespro.ru/doc/pgprosm/14beta2.1/en/html](http://repo.postgrespro.ru/doc/pgprosm/14beta2.1/en/html)
 * Clone repo: `git clone git@github.com:pkonotopov/shardman-docker.git shardman`
 * Limitations:
-  * Linux systems Ubuntu/Centos/Debian - testes
-  * For MacosX see the chapter #6, how to run docker with systemd inside
+  * Linux systems Ubuntu/Centos/Debian - tested.
+  * For MacOS see the chapter #7 - how to run docker container with the systemd inside.
   * WSL - not tested.
 * Inital cluster config in [spec.json](conf/spec.json) file: one node, no replication, no monitor. 
+* Inital cluster config with shards replication [spec_replication.json](conf/spec_replication.json) file: every shard has replica, monitor enabled. 
 
 After cloning shardman-docker repo please execute these steps.
 
 ## 1. Simple launch Shardman in containers via docker-compose
 
 Docker compose project name located in [.env](.env) file:
-
 `COMPOSE_PROJECT_NAME=sdm`
+
 ### 1.1 Up
 
 `docker-compose up -d`
@@ -36,13 +37,11 @@ The expected output should be like this:
 `docker exec sdm_shard_1 shardman-ladle addnodes -n 2ca4e1984120`
 
 ## 2. Cluster scale up
-
 ### 2.1 Add new containers
 `docker-compose up --scale shard=4 --no-recreate -d`
 
 ### 2.2 Get hostnames
 `docker ps --filter "label=com.shardman.role=shard" -a --format "table {{.ID}} {{.Names}}"`
-
 Expected output:
 ```
 CONTAINER ID NAMES
@@ -51,14 +50,12 @@ d500d2c70b3e sdm_shard_2
 5c42f00bca5a sdm_shard_3
 2ca4e1984120 sdm_shard_4
 ```
-
 Containers ID's are the hostnames of new containers, so add new hosts to the cluster:
 
 ### 2.3 Add nodes to cluster
 `docker exec sdm_shard_1 shardman-ladle addnodes -n 5c42f00bca5a,d500d2c70b3e,ba2e956b5095`
 
 ## 3. Cluster scale down
-
 ### 3.1 Remove nodes from the cluster configuration:
 `docker exec sdm_shard_1 shardman-ladle rmnodes -n 5c42f00bca5a,d500d2c70b3e,ba2e956b5095`
 
@@ -66,7 +63,6 @@ Containers ID's are the hostnames of new containers, so add new hosts to the clu
 `docker-compose up --scale shard=1 --no-recreate -d`
 
 ## 4. Create cluster with shard replicas
-
 If you want to create cluster with replicas and monitors you should change some parameters in the specification file [spec.json](conf/spec.json):
 
 ```
@@ -75,25 +71,19 @@ If you want to create cluster with replicas and monitors you should change some 
 ```
 
 or use the prepared [spec_replication.json](conf/spec_replication.json) file.
-
 Then at the Up step (1.1) run cluster with minimal nodes count 2: `docker-compose up --scale shard=2 -d`.
-
 At the Initialization step (1.2) upload configuration file into etcd k/v store.
-
 Finally, add two created nodes to the cluster.
-
-Get nodes names: `docker ps --filter "label=com.shardman.role=shard" -aq`
-
+Get nodes names: 
+`docker ps --filter "label=com.shardman.role=shard" -aq`
 The expected output should be: 
 ```
 2ca4e1984120
 5c42f00bca5a
 ```
-
 Add nodes: `docker exec sdm_shard_1 shardman-ladle addnodes -n 2ca4e1984120,5c42f00bca5a`.
 
 ## 5. Expose ports to cluster nodes with Traefik (Load Balancing, port 8432)
-
 Create cluster with predifined count of nodes:
 
 `docker-compose -f docker-compose-traefik.yml up -d --scale shard=4`
@@ -117,13 +107,6 @@ $ docker exec sdm_shard_1 shardman-ladle addnodes -n $(docker ps --filter "label
 2022-01-13T11:59:39.252Z	INFO	ladle/ladle.go:586	Successfully added nodes b0e479b46867, 64f3d9a22fca, 7eab74c472a6, 9933d8eeef9a to the cluster
 
 $ psql -h 127.0.0.1 -p 8432 -U postgres
-
-psql (12.5, server 14.0)
-WARNING: psql major version 12, server major version 14.
-         Some psql features might not work.
-Type "help" for help.
-
-postgres=#
 </pre>
 
 Scale up and scale down is the similar as described above.
@@ -139,7 +122,7 @@ docker exec sdm_shard_1 shardman-ladle rmnodes -n node_name_1,node_name_2,...
 
 Nodes automatically adding and removing from/to Traefik Load Balancer.
 
-Traefik uses round robin to balance connections to cluster nodes. So every new connection attempt connects client to next node in cluster.
+Traefik uses _round robin_ to balance connections to cluster nodes. So every new connection attempt connects the client to the next node in cluster.
 
 Login into Traefik UI - `http://localhost:8080`. Login/password: admin/passsword.
 
@@ -182,7 +165,7 @@ echo '{"deprecatedCgroupv1": true}' | \
 `open --background -a Docker`
 
 ## 8. Build your own docker image
-
+It's simple:
 <pre>
 docker build --tag my-shardman-image:b01 . -f Dockerfile
 
@@ -190,3 +173,5 @@ docker build --tag my-shardman-image:b01 . -f Dockerfile
 
 docker buildx build --platform linux/amd64 --tag my-shardman-image:b01 . -f Dockerfile
 </pre>
+
+Then put the image name into docker compose file.
