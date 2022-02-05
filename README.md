@@ -155,7 +155,7 @@ To get logs from needed shard:
 ```
 docker exec -it sdm_shard_1 journalctl -f
 ```
-To configure PostgreSQL logging please make changes in [spec](conf/spec.json) - `pgParameters` section befor the cluster initialization (`shardman-ladel init`).
+To configure PostgreSQL logging please make changes in [spec](conf/spec.json) - `pgParameters` section before cluster initialization (`shardman-ladel init`).
 
 ## 7. Run containers with systemd on MacOS
 ### 7.1 Stop running Docker on Mac
