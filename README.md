@@ -171,7 +171,7 @@ It's simple:
 docker build --tag my-shardman-image:b01 . -f Dockerfile
 </pre>
 
-## 8.2 Apple M1
+### 8.2 Apple M1
 <pre>
 docker buildx build --platform linux/amd64 --tag my-shardman-image:b01 . -f Dockerfile
 </pre>
