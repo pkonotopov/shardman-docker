@@ -151,27 +151,29 @@ $ psql -h 127.0.0.1 -p 5432 -U postgres
 Scale up and scale down is the similar as described above (in section 5).
 
 ## 7. Run containers with systemd on MacOS
-### Stop running Docker on Mac
+### 7.1 Stop running Docker on Mac
 `test -z "$(docker ps -q 2>/dev/null)" && osascript -e 'quit app "Docker"'`
-### Install jq and moreutils so we can merge into the existing json file
+### 7.2 Install jq and moreutils so we can merge into the existing json file
 `brew install jq moreutils`
-### Add the needed cgroup config to docker settings.json
+### 7.3 Add the needed cgroup config to docker settings.json
 ```
 echo '{"deprecatedCgroupv1": true}' | \
   jq -s '.[0] * .[1]' ~/Library/Group\ Containers/group.com.docker/settings.json - | \
   sponge ~/Library/Group\ Containers/group.com.docker/settings.json
 ```
-### Restart docker desktop
+### 7.4 Restart docker desktop
 `open --background -a Docker`
 
 ## 8. Build your own docker image
 It's simple:
+### 8.1 Intel chip
 <pre>
 docker build --tag my-shardman-image:b01 . -f Dockerfile
+</pre>
 
-# On Apple M1
-
+## 8.2 Apple M1
+<pre>
 docker buildx build --platform linux/amd64 --tag my-shardman-image:b01 . -f Dockerfile
 </pre>
 
-Then put the image name into docker compose file.
+Then put the new image name into your docker compose file.
