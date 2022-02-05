@@ -184,9 +184,9 @@ echo '{"deprecatedCgroupv1": true}' | \
 ## 8. Build your own docker image
 
 <pre>
-docker build . -f Dockerfile
+docker build --tag my-shardman-image:b01 . -f Dockerfile
 
 # On Apple M1
 
-docker docker buildx build --platform linux/amd64 . -f Dockerfile
+docker buildx build --platform linux/amd64 --tag my-shardman-image:b01 . -f Dockerfile
 </pre>
