@@ -21,7 +21,7 @@ services:
     labels:
       com.shardman.role: shard
       com.shardman.main: true
-    cap_add:
+    cap_add: &cap
       - SYS_ADMIN
     tmpfs: &tmpfs
       - /run
@@ -43,8 +43,7 @@ services:
     image: quay.io/kakoka/sdm-systemd:b10
     labels:
       com.shardman.role: shard
-    cap_add:
-      - SYS_ADMIN
+    cap_add: *cap
     tmpfs: *tmpfs
     volumes: *volumes
     environment: *ETCD

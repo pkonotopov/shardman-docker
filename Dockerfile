@@ -39,7 +39,7 @@ RUN ulimit -s unlimited \
     && mkdir -p /etc/systemd/system/systemd-logind.service.d /etc/shardman \
     && chown postgres:postgres /etc/shardman -R \
     && sed -i 's/var\/lib\/pgpro\/sdm-14\/data/etc\/shardman/g' /usr/lib/systemd/system/shardman-bowl\@.service \
-    && sed -i 's/\[Service\]/\[Service\]\nStandardOutput=journal+console/g' /usr/lib/systemd/system/shardman-* \
+    # && sed -i 's/\[Service\]/\[Service\]\nStandardOutput=journal+console\nStandardError=journal+console/g' /usr/lib/systemd/system/shardman-* \
     && systemctl enable shardman-bowl@${CLUSTER_NAME} \
     && apt-get purge -y --allow-remove-essential --allow-change-held-packages \
     && apt-get autoremove -y \

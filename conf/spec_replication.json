@@ -39,6 +39,8 @@
                 "autovacuum_vacuum_cost_delay": "50",
                 "checkpoint_completion_target": "0.9",
                 "checkpoint_timeout": "60min",
+                "log_destination": "stderr",
+                "logging_collector": "on",
                 "log_checkpoints": "true",
                 "log_statement":"none",
                 "log_line_prefix":"%m [%r][%p]",

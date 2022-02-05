@@ -150,6 +150,13 @@ $ psql -h 127.0.0.1 -p 5432 -U postgres
 </pre>
 Scale up and scale down is the similar as described above (in section 5).
 
+#### 6.1 Logging
+To get logs from needed shard:
+```
+docker exec -it sdm_shard_1 journalctl -f
+```
+To configure PostgreSQL logging please make changes in [spec](conf/spec.json) - `pgParameters` section befor the cluster initialization (`shardman-ladel init`).
+
 ## 7. Run containers with systemd on MacOS
 ### 7.1 Stop running Docker on Mac
 `test -z "$(docker ps -q 2>/dev/null)" && osascript -e 'quit app "Docker"'`
