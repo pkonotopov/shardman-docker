@@ -143,9 +143,32 @@ Traefik uses round robin to balance connections to cluster nodes. So every new c
 
 Login into Traefik UI - `http://localhost:8080`. Login/password: admin/passsword.
 
-## 6. Run containers with systemd on Macos
+## 6. Expose ports to only first cluster node (shard-1, port 5432)
 
-### Stop running Docker
+In this configuration you can have access to the cluster thru one node (shard-1). Other shards also will be operable, but without direct access to them. 
+
+Create cluster with predifined count of nodes (4 nodes: shard-1, shards-1,2,3):
+
+`docker-compose -f docker-compose-one-node.yml up -d --scale shards=3`
+
+Create configuration and add nodes to the cluster:
+
+- [spec.json](conf/spec.json) - simple Shardman cluster configuration _without_ shard replication (HA)
+- [spec_replication.json](conf/spec_replication.json) simple Shardman cluster configuration _with_ shard replication (HA)
+
+Pick configuration you want. For the local deployment (i.e. docker compose) we recomend to use shards _without_ replication.
+
+<pre>
+$ docker exec sdm_shard_1 shardman-ladle init -f /etc/shardman/spec.json
+
+$ docker exec sdm_shard_1 shardman-ladle addnodes -n $(docker ps --filter "label=com.shardman.role=shard" -aq | awk '{aggr=aggr $1","} END {print aggr}' | rev | cut -c 2- | rev)
+
+$ psql -h 127.0.0.1 -p 5432 -U postgres
+</pre>
+Scale up and scale down is the similar as described above (in section 5).
+
+## 7. Run containers with systemd on MacOS
+### Stop running Docker on Mac
 `test -z "$(docker ps -q 2>/dev/null)" && osascript -e 'quit app "Docker"'`
 ### Install jq and moreutils so we can merge into the existing json file
 `brew install jq moreutils`
@@ -156,5 +179,14 @@ echo '{"deprecatedCgroupv1": true}' | \
   sponge ~/Library/Group\ Containers/group.com.docker/settings.json
 ```
 ### Restart docker desktop
-
 `open --background -a Docker`
+
+## 8. Build your own docker image
+
+<pre>
+docker build . -f Dockerfile
+
+# On Apple M1
+
+docker docker buildx build --platform linux/amd64 . -f Dockerfile
+</pre>
