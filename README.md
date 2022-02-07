@@ -1,4 +1,4 @@
-# Shardman docker compose.
+# Shardman in docker.
 
 * Clone repo: `git clone git@github.com:pkonotopov/shardman-docker.git shardman`
 * Shardman documentation: [http://repo.postgrespro.ru/doc/pgprosm/14beta2.1/en/html](http://repo.postgrespro.ru/doc/pgprosm/14beta2.1/en/html)
@@ -209,7 +209,7 @@ So every new connection attempt connects the client to the **next node** in clus
 
 Login into Traefik Web UI - `http://localhost:8080`. Login/password: admin/passsword.
 
-## 6 Logging
+## 6. Logging
 
 To get logs from needed shard:
 
