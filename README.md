@@ -29,7 +29,7 @@ COMPOSE_COMPATIBILITY=true
 docker-compose -f docker-compose.yml up -d
 ```
 
-This command bring up three containers: `sdm_etcd` and `sdm_shard_1`, `sdm_shards_1` in simple configuration without additional nodes, replicas and monitor.
+This command bring up three containers: `sdm_etcd_1` and `sdm_shard_1`, `sdm_shards_1` in simple configuration without additional nodes, replicas and monitor.
 
 ### 1.2 Initialization
 
@@ -58,6 +58,12 @@ dd47ba86b46c sdm_shards_1
 
 ```shell
 docker exec sdm_shard_1 shardman-ladle addnodes -n 85457103f6aa
+```
+
+### 1.4 Connect to the cluster
+
+```shell
+psql -h 127.0.0.1 -p 5432 -U postgres
 ```
 
 ## 2. Scale up
