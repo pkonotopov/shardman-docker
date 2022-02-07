@@ -1,11 +1,12 @@
 version: "3.7"
 
 services:
+
   etcd:
     hostname: etcd
     image: quay.io/coreos/etcd:v3.5.1
     labels:
-      - com.shardman.role=etcd
+      com.shardman.role: etcd
     command:
       - '/usr/local/bin/etcd'
       - '--name=etcd'
@@ -14,23 +15,37 @@ services:
       - '--advertise-client-urls=http://etcd:2379'
       - '--listen-client-urls=http://0.0.0.0:2379'
       - '--initial-cluster=etcd=http://etcd:2380'
-  shard:
-    labels:
-      - com.shardman.role=shard
+
+  shard: &shard
     image: quay.io/kakoka/sdm-systemd:b10
-    cap_add:
+    labels:
+      com.shardman.role: shard
+      com.shardman.main: true
+    cap_add: &cap
       - SYS_ADMIN
-    tmpfs:
+    tmpfs: &tmpfs
       - /run
       - /run/lock
-    volumes:
+    volumes: &volumes
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
       - $PWD/conf:/etc/shardman:ro
-      - pgdata:/var/lib/pgpro/
     environment: &ETCD
       CLUSTER_NAME: "cluster0"
       SDM_CLUSTER_NAME: "cluster0"
       SDM_LOG_LEVEL: "info"
       SDM_STORE_ENDPOINTS: "http://etcd:2379"
-volumes:
-  pgdata:
+    expose:
+      - 5432
+    ports:
+      - 5432:5432
+
+  shards:
+    image: quay.io/kakoka/sdm-systemd:b10
+    labels:
+      com.shardman.role: shard
+    cap_add: *cap
+    tmpfs: *tmpfs
+    volumes: *volumes
+    environment: *ETCD
+    expose:
+      - 5432
