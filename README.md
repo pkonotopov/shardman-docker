@@ -221,29 +221,19 @@ To configure PostgreSQL logging please make changes in [spec](conf/spec.json) - 
 
 ## 7. Run containers with systemd on MacOS
 
-### 7.1 Stop running Docker on Mac
-
 ```shell 
+# Stop running Docker on Mac
 test -z "$(docker ps -q 2>/dev/null)" && osascript -e 'quit app "Docker"'
-```
 
-### 7.2 Install jq and moreutils so we can merge into the existing json file
-
-```shell
+# Install jq and moreutils so we can merge into the existing json file
 brew install jq moreutils
-```
 
-### 7.3 Add the needed cgroup config to docker settings.json
-
-```shell
+# Add the needed cgroup config to docker settings.json
 echo '{"deprecatedCgroupv1": true}' | \
   jq -s '.[0] * .[1]' ~/Library/Group\ Containers/group.com.docker/settings.json - | \
   sponge ~/Library/Group\ Containers/group.com.docker/settings.json
-```
 
-### 7.4 Restart docker desktop
-
-```shell
+# Restart docker desktop
 open --background -a Docker
 ```
 
