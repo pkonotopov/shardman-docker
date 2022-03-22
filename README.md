@@ -6,7 +6,7 @@
 * Inital cluster config with shards replication [spec_replication.json](conf/spec_replication.json) file: every shard has replica, monitor enabled. 
 * Limitations:
   * Linux systems Ubuntu/Centos/Debian - tested.
-  * For MacOS see the chapter #7 - [how to run docker container with the systemd inside](#9-run-containers-with-systemd-on-macos).
+  * For MacOS see the chapter #9 - [Run containers with the systemd on MacOS](#9-run-containers-with-systemd-on-macos).
   * WSL - not tested.
 
 - [1. Quck start](#1-quck-start)
