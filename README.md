@@ -38,11 +38,12 @@ After cloning shardman-docker repo please execute these steps.
 ## 1. Quck start
 
 ```shell
-$ docker compose -f docker-compose.yml up -d --scale shards=3 --no-recreate
-$ docker exec sdm_shard_1 shardman-ladle init -f /etc/shardman/spec.json
-$ docker exec sdm_shard_1 shardman-ladle addnodes -n $(docker ps --filter "label=com.shardman.role=shard" -aq | awk '{aggr=aggr $1","} END {print aggr}' | rev | cut -c 2- | rev)
+docker compose -f docker-compose.yml up -d --scale shards=3 --no-recreate
+docker exec sdm_shard_1 shardman-ladle init -f /etc/shardman/spec.json
+docker exec sdm_shard_1 shardman-ladle addnodes -n $(docker ps --filter "label=com.shardman.role=shard" -aq | awk '{aggr=aggr $1","} END {print aggr}' | rev | cut -c 2- | rev)
 
-$ psql -h 127.1 -U postgres
+# Connect to database
+psql -h 127.1 -U postgres
 
 ```
 
