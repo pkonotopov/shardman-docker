@@ -45,7 +45,7 @@ services:
       - '--initial-cluster=etcd=http://etcd:2380'
 
   shard: &shard
-    image: quay.io/kakoka/sdm-systemd:b10
+    image: quay.io/kakoka/shardman:14.2.1
     labels:
       com.shardman.role: shard
       traefik.enable: 'true'
@@ -59,7 +59,6 @@ services:
       - /run
       - /run/lock
     volumes:
-      # - pgdata:/var/lib/pgpro/sdm-14/data
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
       - $PWD/conf:/etc/shardman:ro
     environment: &ETCD
@@ -69,6 +68,3 @@ services:
       SDM_STORE_ENDPOINTS: "http://etcd:2379"
     expose:
       - 5432
-
-#volumes:
-#  pgdata:
