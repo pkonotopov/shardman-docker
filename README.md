@@ -12,6 +12,12 @@
 
 After cloning shardman-docker repo please execute these steps.
 
+## 0. Build your own image
+
+```shell
+docker buildx build --platform linux/amd64 --tag <image name>:<tag> . -f Dockerfile
+```
+
 ## 1. Simple Shardman cluster
 
 In this configuration **only the first cluster node** will be accessible from outside: `sdm_shard_1`, port `5432`.
@@ -166,7 +172,7 @@ Create configuration and add nodes to the cluster:
 
 Pick configuration you want. For the local deployment (i.e. docker compose) we recomend to use shards _without_ replication.
 
-<pre>
+```shell
 docker exec sdm_shard_1 shardman-ladle init -f /etc/shardman/spec.json
 
 docker exec sdm_shard_1 shardman-ladle addnodes -n $(docker ps --filter "label=com.shardman.role=shard" -aq | awk '{aggr=aggr $1","} END {print aggr}' | rev | cut -c 2- | rev)
@@ -178,7 +184,12 @@ docker exec sdm_shard_1 shardman-ladle addnodes -n $(docker ps --filter "label=c
 2022-01-13T11:59:39.252Z	INFO	ladle/ladle.go:586	Successfully added nodes b0e479b46867, 64f3d9a22fca, 7eab74c472a6, 9933d8eeef9a to the cluster
 
 psql -h 127.0.0.1 -p 8432 -U postgres
-</pre>
+```
+
+Delete all containers, before re-run after major changes:
+```shell
+docker-compose down
+```
 
 Scale up and scale down is the similar as described above.
 
