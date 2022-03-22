@@ -1,4 +1,4 @@
-# Shardman in docker.
+<h1>Shardman in docker</h1>
 
 * Clone repo: `git clone git@github.com:pkonotopov/shardman-docker.git shardman`
 * Shardman documentation: [http://repo.postgrespro.ru/doc/pgprosm/14beta2.1/en/html](http://repo.postgrespro.ru/doc/pgprosm/14beta2.1/en/html)
@@ -9,29 +9,28 @@
   * For MacOS see the chapter #7 - how to run docker container with the systemd inside.
   * WSL - not tested.
 
-- [Shardman in docker.](#shardman-in-docker)
-  - [1. Quck start](#1-quck-start)
-  - [2. Quck build your own image](#2-quck-build-your-own-image)
-  - [3. Simple Shardman cluster](#3-simple-shardman-cluster)
-    - [3.1 Up](#31-up)
-    - [3.2 Initialization](#32-initialization)
-    - [3.3 Get hostname of the first node](#33-get-hostname-of-the-first-node)
-    - [3.4 Add first node to the cluster](#34-add-first-node-to-the-cluster)
-    - [3.5 Connect to the cluster](#35-connect-to-the-cluster)
-  - [4. Scale up](#4-scale-up)
-    - [4.1 Create new containers](#41-create-new-containers)
-    - [4.2 Get containers hostnames](#42-get-containers-hostnames)
-    - [4.3 Add new nodes to cluster](#43-add-new-nodes-to-cluster)
-  - [5. Scale down](#5-scale-down)
-    - [5.1 Remove nodes from the cluster configuration:](#51-remove-nodes-from-the-cluster-configuration)
-    - [5.2 Remove containers](#52-remove-containers)
-  - [6. Create cluster with shard replicas](#6-create-cluster-with-shard-replicas)
-  - [7. Expose ports to all cluster nodes with Traefik (Load Balancing, port 8432)](#7-expose-ports-to-all-cluster-nodes-with-traefik-load-balancing-port-8432)
-  - [8. Logging](#8-logging)
-  - [9. Run containers with systemd on MacOS](#9-run-containers-with-systemd-on-macos)
-  - [10. Build your own docker image](#10-build-your-own-docker-image)
-    - [10.1 Intel chip](#101-intel-chip)
-    - [10.2 Apple M1](#102-apple-m1)
+- [1. Quck start](#1-quck-start)
+- [2. Quck build your own image](#2-quck-build-your-own-image)
+- [3. Simple Shardman cluster](#3-simple-shardman-cluster)
+  - [3.1 Up](#31-up)
+  - [3.2 Initialization](#32-initialization)
+  - [3.3 Get hostname of the first node](#33-get-hostname-of-the-first-node)
+  - [3.4 Add first node to the cluster](#34-add-first-node-to-the-cluster)
+  - [3.5 Connect to the cluster](#35-connect-to-the-cluster)
+- [4. Scale up](#4-scale-up)
+  - [4.1 Create new containers](#41-create-new-containers)
+  - [4.2 Get containers hostnames](#42-get-containers-hostnames)
+  - [4.3 Add new nodes to cluster](#43-add-new-nodes-to-cluster)
+- [5. Scale down](#5-scale-down)
+  - [5.1 Remove nodes from the cluster configuration:](#51-remove-nodes-from-the-cluster-configuration)
+  - [5.2 Remove containers](#52-remove-containers)
+- [6. Create cluster with shard replicas](#6-create-cluster-with-shard-replicas)
+- [7. Expose ports to all cluster nodes with Traefik (Load Balancing, port 8432)](#7-expose-ports-to-all-cluster-nodes-with-traefik-load-balancing-port-8432)
+- [8. Logging](#8-logging)
+- [9. Run containers with systemd on MacOS](#9-run-containers-with-systemd-on-macos)
+- [10. Build your own docker image](#10-build-your-own-docker-image)
+  - [10.1 Intel chip](#101-intel-chip)
+  - [10.2 Apple M1](#102-apple-m1)
 
 After cloning shardman-docker repo please execute these steps.
 
