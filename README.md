@@ -9,16 +9,50 @@
   * For MacOS see the chapter #7 - how to run docker container with the systemd inside.
   * WSL - not tested.
 
+- [Shardman in docker.](#shardman-in-docker)
+  - [1. Quck start](#1-quck-start)
+  - [2. Quck build your own image](#2-quck-build-your-own-image)
+  - [3. Simple Shardman cluster](#3-simple-shardman-cluster)
+    - [3.1 Up](#31-up)
+    - [3.2 Initialization](#32-initialization)
+    - [3.3 Get hostname of the first node](#33-get-hostname-of-the-first-node)
+    - [3.4 Add first node to the cluster](#34-add-first-node-to-the-cluster)
+    - [3.5 Connect to the cluster](#35-connect-to-the-cluster)
+  - [4. Scale up](#4-scale-up)
+    - [4.1 Create new containers](#41-create-new-containers)
+    - [4.2 Get containers hostnames](#42-get-containers-hostnames)
+    - [4.3 Add new nodes to cluster](#43-add-new-nodes-to-cluster)
+  - [5. Scale down](#5-scale-down)
+    - [5.1 Remove nodes from the cluster configuration:](#51-remove-nodes-from-the-cluster-configuration)
+    - [5.2 Remove containers](#52-remove-containers)
+  - [6. Create cluster with shard replicas](#6-create-cluster-with-shard-replicas)
+  - [7. Expose ports to all cluster nodes with Traefik (Load Balancing, port 8432)](#7-expose-ports-to-all-cluster-nodes-with-traefik-load-balancing-port-8432)
+  - [8. Logging](#8-logging)
+  - [9. Run containers with systemd on MacOS](#9-run-containers-with-systemd-on-macos)
+  - [10. Build your own docker image](#10-build-your-own-docker-image)
+    - [10.1 Intel chip](#101-intel-chip)
+    - [10.2 Apple M1](#102-apple-m1)
 
 After cloning shardman-docker repo please execute these steps.
 
-## 0. Build your own image
+## 1. Quck start
+
+```shell
+$ docker compose -f docker-compose.yml up -d --scale shards=3 --no-recreate
+$ docker exec sdm_shard_1 shardman-ladle init -f /etc/shardman/spec.json
+$ docker exec sdm_shard_1 shardman-ladle addnodes -n $(docker ps --filter "label=com.shardman.role=shard" -aq | awk '{aggr=aggr $1","} END {print aggr}' | rev | cut -c 2- | rev)
+
+$ psql -h 127.1 -U postgres
+
+```
+
+## 2. Quck build your own image
 
 ```shell
 docker buildx build --platform linux/amd64 --tag <image name>:<tag> . -f Dockerfile
 ```
 
-## 1. Simple Shardman cluster
+## 3. Simple Shardman cluster
 
 In this configuration **only the first cluster node** will be accessible from outside: `sdm_shard_1`, port `5432`.
 
@@ -29,7 +63,7 @@ COMPOSE_PROJECT_NAME=sdm
 COMPOSE_COMPATIBILITY=true
 ```
 
-### 1.1 Up
+### 3.1 Up
 
 ```shell
 docker-compose -f docker-compose.yml up -d
@@ -37,7 +71,7 @@ docker-compose -f docker-compose.yml up -d
 
 This command bring up three containers: `sdm_etcd_1` and `sdm_shard_1`, `sdm_shards_1` in simple configuration without additional nodes, replicas and monitor.
 
-### 1.2 Initialization
+### 3.2 Initialization
 
 ```shell
 docker exec sdm_shard_1 shardman-ladle init -f /etc/shardman/spec.json
@@ -45,7 +79,7 @@ docker exec sdm_shard_1 shardman-ladle init -f /etc/shardman/spec.json
 
 This command uploads initial configuraion into the etcd k/v storage.
 
-### 1.3 Get hostname of the first node
+### 3.3 Get hostname of the first node
 
 ```shell
 docker ps --filter "label=com.shardman.role=shard" -aq --format "table {{.ID}} {{.Names}}"
@@ -60,26 +94,26 @@ dd47ba86b46c sdm_shards_1
 
 **sdm_shard_1** - this node we will add as a first cluster node. 
 
-### 1.4 Add first node to the cluster
+### 3.4 Add first node to the cluster
 
 ```shell
 docker exec sdm_shard_1 shardman-ladle addnodes -n 85457103f6aa
 ```
 
-### 1.4 Connect to the cluster
+### 3.5 Connect to the cluster
 
 ```shell
 psql -h 127.0.0.1 -p 5432 -U postgres
 ```
 
-## 2. Scale up
-### 2.1 Create new containers
+## 4. Scale up
+### 4.1 Create new containers
 
 ```shell
 docker-compose -f docker-compose-one-node.yml up -d --scale shards=3 --no-recreate
 ```
 
-### 2.2 Get containers hostnames
+### 4.2 Get containers hostnames
 
 ```shell
 docker ps --filter "label=com.shardman.role=shard" -a --format "table {{.ID}} {{.Names}}"
@@ -97,26 +131,26 @@ d500d2c70b3e sdm_shards_2
 
 **Containers ID's** are the hostnames of new containers, so let's add these new hosts to the cluster:
 
-### 2.3 Add new nodes to cluster
+### 4.3 Add new nodes to cluster
 
 ```shell
 docker exec sdm_shard_1 shardman-ladle addnodes -n ba2e956b5095,d500d2c70b3e,5c42f00bca5a
 ```
 
-## 3. Scale down
-### 3.1 Remove nodes from the cluster configuration:
+## 5. Scale down
+### 5.1 Remove nodes from the cluster configuration:
 
 ```shell
 docker exec sdm_shard_1 shardman-ladle rmnodes -n ba2e956b5095,d500d2c70b3e,5c42f00bca5a
 ```
 
-### 3.2 Remove containers
+### 5.2 Remove containers
 
 ```shell
 docker-compose up --scale shards=1 --no-recreate -d
 ```
 
-## 4. Create cluster with shard replicas
+## 6. Create cluster with shard replicas
 If you want to create cluster with replicas and monitors you should change some parameters in the specification file [spec.json](conf/spec.json):
 
 ```json
@@ -158,7 +192,7 @@ Add nodes:
 docker exec sdm_shard_1 shardman-ladle addnodes -n 2ca4e1984120,5c42f00bca5a
 ```
 
-## 5. Expose ports to all cluster nodes with Traefik (Load Balancing, port 8432)
+## 7. Expose ports to all cluster nodes with Traefik (Load Balancing, port 8432)
 Create cluster with predifined count of nodes:
 
 ```shell
@@ -220,7 +254,7 @@ So every new connection attempt connects the client to the **next node** in clus
 
 Login into Traefik Web UI - `http://localhost:8080`. Login/password: admin/passsword.
 
-## 6. Logging
+## 8. Logging
 
 To get logs from needed shard:
 
@@ -230,7 +264,7 @@ docker exec -it sdm_shard_1 journalctl -f
 
 To configure PostgreSQL logging please make changes in [spec](conf/spec.json) - `pgParameters` section before cluster initialization (`shardman-ladel init`).
 
-## 7. Run containers with systemd on MacOS
+## 9. Run containers with systemd on MacOS
 
 ```shell 
 # Stop running Docker on Mac
@@ -248,16 +282,16 @@ echo '{"deprecatedCgroupv1": true}' | \
 open --background -a Docker
 ```
 
-## 8. Build your own docker image
+## 10. Build your own docker image
 
 It's simple:
 
-### 8.1 Intel chip
+### 10.1 Intel chip
 <pre>
 docker build --tag my-shardman-image:b01 . -f Dockerfile
 </pre>
 
-### 8.2 Apple M1
+### 10.2 Apple M1
 <pre>
 docker buildx build --platform linux/amd64 --tag my-shardman-image:b01 . -f Dockerfile
 </pre>
