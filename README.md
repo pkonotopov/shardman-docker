@@ -284,7 +284,7 @@ open --background -a Docker
 
 ## 10. Build your own docker image
 
-It's simple:
+Only x86 architecture is supported. Build is simple:
 
 ### 10.1 Intel chip
 <pre>
@@ -292,6 +292,8 @@ docker build --tag my-shardman-image:b01 . -f Dockerfile
 </pre>
 
 ### 10.2 Apple M1
+
+Need to define target architecture `--platform linux/amd64`.
 <pre>
 docker buildx build --platform linux/amd64 --tag my-shardman-image:b01 . -f Dockerfile
 </pre>
