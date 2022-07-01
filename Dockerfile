@@ -19,11 +19,11 @@ RUN ulimit -s unlimited \
     && printf "APT::Install-Recommends '0';\nAPT::Install-Suggests '0';" > /etc/apt/apt.conf.d/01norecommend \
     && apt-get update -y \
     && apt-get install -y --no-install-recommends gnupg curl \
-    && printf "deb [arch=amd64] http://repo.postgrespro.ru/pgprosm-14/ubuntu/ focal main" > /etc/apt/sources.list.d/shardman.list \
-    && curl -fsSL http://repo.postgrespro.ru/pgprosm-14/keys/GPG-KEY-POSTGRESPRO | apt-key add - \
+    # && printf "deb [arch=amd64] http://repo.postgrespro.ru/pgprosm-14/ubuntu/ focal main" > /etc/apt/sources.list.d/shardman.list \
+    # && curl -fsSL http://repo.postgrespro.ru/pgprosm-14/keys/GPG-KEY-POSTGRESPRO | apt-key add - \
     # For local builds only
-    # && printf "deb [arch=amd64] http://localrepo.l.postgrespro.ru/dev/pgprosm-14/ubuntu/ focal main" > /etc/apt/sources.list.d/shardman.list \
-    # && curl -fsSL http://localrepo.l.postgrespro.ru/keys/postgrespro/GPG-KEY-POSTGRESPRO | apt-key add - \
+    && printf "deb [arch=amd64] http://repo.l.postgrespro.ru//pgprosm-14/ubuntu/ focal main" > /etc/apt/sources.list.d/shardman.list \
+    && curl -fsSL http://repo.l.postgrespro.ru/keys/GPG-KEY-POSTGRESPRO | apt-key add - \
     && apt-get update -y \
     && apt-get install -y --no-install-recommends \
         systemd-sysv libicu66 libev4 libpam0g libssl1.1 libxml2 tzdata \
@@ -54,4 +54,4 @@ RUN ulimit -s unlimited \
 
 ENV PATH "/opt/pgpro/sdm-$PG_MAJOR/bin:${PATH}"
 
-CMD ["/bin/bash", "-c", "exec /sbin/init --log-target=journal 3>&1"]
+CMD ["/bin/bash", "-c", "exec /sbin/init --log-color=true --log-level=info --log-target=console 3>&1"]
