@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   traefik:
-    image: traefik:v2.8.0
+    image: traefik:v2.8.3
     hostname: traefik
     command:
       - --api.insecure=true
@@ -45,7 +45,7 @@ services:
       - '--initial-cluster=etcd=http://etcd:2380'
 
   shard: &shard
-    image: quay.io/kakoka/shardman:14.2.3
+    image: quay.io/kakoka/shardman:14.4.6
     labels:
       com.shardman.role: shard
       traefik.enable: 'true'

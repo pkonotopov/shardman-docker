@@ -18,7 +18,7 @@ SHELL ["/bin/bash", "-exo", "pipefail", "-c"]
 RUN ulimit -s unlimited \
     && printf "APT::Install-Recommends '0';\nAPT::Install-Suggests '0';" > /etc/apt/apt.conf.d/01norecommend \
     && apt-get update -y \
-    && apt-get install -y --no-install-recommends gnupg curl \
+    && apt-get install -y --no-install-recommends gnupg curl ca-certificates \
     # && printf "deb [arch=amd64] http://repo.postgrespro.ru/pgprosm-14/ubuntu/ focal main" > /etc/apt/sources.list.d/shardman.list \
     # && curl -fsSL http://repo.postgrespro.ru/pgprosm-14/keys/GPG-KEY-POSTGRESPRO | apt-key add - \
     # For local builds only
@@ -33,6 +33,7 @@ RUN ulimit -s unlimited \
         postgrespro-sdm-${PG_MAJOR}-client \
         postgrespro-sdm-${PG_MAJOR}-contrib \
         postgrespro-sdm-${PG_MAJOR}-libs \
+        postgrespro-sdm-${PG_MAJOR}-backup-src \
         shardman-services \
         shardman-tools \
         stolon-sdm \

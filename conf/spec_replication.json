@@ -9,10 +9,12 @@
         "MonitorsNum": 1
     },
     "ClusterSpec":{
-        "PgSuAuthMethod":"trust",
+        "PgSuAuthMethod":"md5",
         "PgSuUsername":"postgres",
+        "PgSuPassword":"postgres",
         "PgReplUsername":"repluser",
-        "PgReplAuthMethod":"trust",
+        "PgReplPassword":"repluser",
+        "PgReplAuthMethod":"md5",
         "UseProxy":true,
         "StolonSpec":{
             "synchronousReplication": false,
@@ -26,7 +28,8 @@
                 "host all repluser 0.0.0.0/0 trust"
             ],
             "pgParameters":{
-                "shared_buffers": "512MB",
+                "password_encryption": "md5",
+                "shared_buffers": "128MB",
                 "work_mem": "32MB",
                 "autovacuum_analyze_scale_factor": "0.05",
                 "autovacuum_analyze_threshold": "100",
@@ -48,14 +51,15 @@
                 "wal_level":"logical",
                 "wal_compression": "on",
                 "shared_preload_libraries":"postgres_fdw,shardman,pg_stat_statements",
-                "max_prepared_transactions":"200",
-                "#default_transaction_isolation":"repeatable read",
-                "#track_global_snapshots":"on",
-                "#global_snapshot_defer_time":"20",
-                "#postgres_fdw.use_global_snapshots":"on",
-                "postgres_fdw.use_repeatable_read":"on",
+                "default_transaction_isolation":"repeatable read",
                 "enable_partitionwise_aggregate":"on",
                 "enable_partitionwise_join":"on",
+                "postgres_fdw.estimate_as_hashjoin":"on",                           
+                "postgres_fdw.estimate_indexscan":"on",                             
+                "postgres_fdw.optimize_cursors":"on",                               
+                "postgres_fdw.subplan_pushdown":"on",
+                "postgres_fdw.use_twophase":"on",
+                "max_prepared_transactions":"120",
                 "max_worker_processes":"16",
                 "max_logical_replication_workers": "9"
             }
