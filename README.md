@@ -1,4 +1,4 @@
-[![Docker Repository on Quay](https://quay.io/repository/kakoka/shardman/status "Docker Repository on Quay")](https://quay.io/repository/kakoka/shardman) [![GitHub tag](https://badgen.net/github/tag/kakoka/shardman-docker)](https://github.com/pkonotopov/shardman-docker/tags)
+[![Docker Repository on Quay](https://quay.io/repository/kakoka/shardman/status "Docker Repository on Quay")](https://quay.io/repository/kakoka/shardman) [![GitHub tag](https://badgen.net/github/tag/pkonotopov/shardman-docker)](https://github.com/pkonotopov/shardman-docker/tags)
 
 <h1>Shardman in docker</h1>
 
