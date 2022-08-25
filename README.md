@@ -1,3 +1,5 @@
+[![Docker Repository on Quay](https://quay.io/repository/kakoka/shardman/status "Docker Repository on Quay")](https://quay.io/repository/kakoka/shardman)
+
 <h1>Shardman in docker</h1>
 
 * Clone repo: `git clone git@github.com:pkonotopov/shardman-docker.git shardman`
