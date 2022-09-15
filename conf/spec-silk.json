@@ -63,9 +63,9 @@
                 "max_logical_replication_workers": "9",
                 "shardman.enforce_foreign_join": "on",
                 "#csn_snapshot_defer_time": "1",
-                "#enable_csn_wal":"true",
-                "#enable_csn_snapshot":"on",
-                "#shardman.silk_enabled":"on"
+                "enable_csn_wal":"true",
+                "enable_csn_snapshot":"on",
+                "shardman.silk_enabled":"on"
             },
             "FDWOptions" :{
                 "async_capable": "true",
