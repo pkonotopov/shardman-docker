@@ -3,7 +3,7 @@
 <h1>Shardman in docker</h1>
 
 * Clone repo: `git clone git@github.com:pkonotopov/shardman-docker.git shardman`
-* Shardman 14.4.6 documentation: [http://repo.postgrespro.ru/doc/pgprosm/14.4.6/en/html](http://repo.postgrespro.ru/doc/pgprosm/14.4.6/en/html)
+* Shardman 14.4.6 documentation: [http://repo.postgrespro.ru/doc/pgprosm/14.4.9/en/html](http://repo.postgrespro.ru/doc/pgprosm/14.4.6/en/html)
 * Inital cluster config in [spec.json](conf/spec.json) file: one node, no replication, no monitor. 
 * Inital cluster config with shards replication [spec_replication.json](conf/spec_replication.json) file: every shard has replica, monitor enabled. 
 * Limitations:
@@ -40,8 +40,8 @@ After cloning shardman-docker repo please execute these steps.
 
 ```shell
 docker compose -f docker-compose.yml up -d --scale shards=3 --no-recreate
-docker exec sdm_shard_1 shardman-ladle init -f /etc/shardman/spec.json
-docker exec sdm_shard_1 shardman-ladle addnodes -n $(docker ps --filter "label=com.shardman.role=shard" -aq | awk '{aggr=aggr $1","} END {print aggr}' | rev | cut -c 2- | rev)
+docker exec sdm_shard_1 shardmanctl init -f /etc/shardman/spec.json
+docker exec sdm_shard_1 shardmanctl nodes add -n $(docker ps --filter "label=com.shardman.role=shard" -aq | awk '{aggr=aggr $1","} END {print aggr}' | rev | cut -c 2- | rev)
 
 # Connect to database
 psql -h 127.1 -U postgres
@@ -76,7 +76,7 @@ This command bring up three containers: `sdm_etcd_1` and `sdm_shard_1`, `sdm_sha
 ### 3.2 Initialization
 
 ```shell
-docker exec sdm_shard_1 shardman-ladle init -f /etc/shardman/spec.json
+docker exec sdm_shard_1 shardmanclt init -f /etc/shardman/spec.json
 ```
 
 This command uploads initial configuraion into the etcd k/v storage.
@@ -99,7 +99,7 @@ dd47ba86b46c sdm_shards_1
 ### 3.4 Add first node to the cluster
 
 ```shell
-docker exec sdm_shard_1 shardman-ladle addnodes -n 85457103f6aa
+docker exec sdm_shard_1 shardmanctl nodes add -n 85457103f6aa
 ```
 
 ### 3.5 Connect to the cluster
@@ -136,14 +136,14 @@ d500d2c70b3e sdm_shards_2
 ### 4.3 Add new nodes to cluster
 
 ```shell
-docker exec sdm_shard_1 shardman-ladle addnodes -n ba2e956b5095,d500d2c70b3e,5c42f00bca5a
+docker exec sdm_shard_1 shardmanctl nodes add -n ba2e956b5095,d500d2c70b3e,5c42f00bca5a
 ```
 
 ## 5. Scale down
 ### 5.1 Remove nodes from the cluster configuration:
 
 ```shell
-docker exec sdm_shard_1 shardman-ladle rmnodes -n ba2e956b5095,d500d2c70b3e,5c42f00bca5a
+docker exec sdm_shard_1 shardmanctl nodes rm -n ba2e956b5095,d500d2c70b3e,5c42f00bca5a
 ```
 
 ### 5.2 Remove containers
@@ -191,7 +191,7 @@ The expected output should be:
 Add nodes: 
 
 ```shell
-docker exec sdm_shard_1 shardman-ladle addnodes -n 2ca4e1984120,5c42f00bca5a
+docker exec sdm_shard_1 shardmanctl nodes add -n 2ca4e1984120,5c42f00bca5a
 ```
 
 ## 7. Expose ports to all cluster nodes with Traefik (Load Balancing, port 8432)
@@ -204,22 +204,29 @@ docker-compose -f docker-compose-traefik.yml up -d --scale shard=4
 Create configuration and add nodes to the cluster:
 
 - [spec.json](conf/spec.json) - simple Shardman cluster configuration _without_ shard replication (HA)
-- [spec_replication.json](conf/spec_replication.json) simple Shardman cluster configuration _with_ shard replication (HA)
+- [spec-silk.json](conf/spec-silk.json) - simple Shardman cluster configuration _without_ shard replication (HA) and with shardman transport enabled -[A New Approach to Sharding for Distributed PostgreSQL](https://postgrespro.com/blog/pgsql/5969681)
+- [spec-replication.json](conf/spec-replication.json) simple Shardman cluster configuration _with_ shard replication (HA)
 
 Pick configuration you want. For the local deployment (i.e. docker compose) we recomend to use shards _without_ replication.
 
 ```shell
-docker exec sdm_shard_1 shardman-ladle init -f /etc/shardman/spec.json
+docker exec sdm_shard_1 shardmanctl init -f /etc/shardman/spec.json
 
-docker exec sdm_shard_1 shardman-ladle addnodes -n $(docker ps --filter "label=com.shardman.role=shard" -aq | awk '{aggr=aggr $1","} END {print aggr}' | rev | cut -c 2- | rev)
+docker exec sdm_shard_1 shardmanctl nodes add -n $(docker ps --filter "label=com.shardman.role=shard" -aq | awk '{aggr=aggr $1","} END {print aggr}' | rev | cut -c 2- | rev)
 
-2022-01-13T11:58:54.534Z	INFO	ladle/ladle.go:372	Checking if bowls on all nodes have applied current cluster configuration
-2022-01-13T11:58:54.536Z	INFO	ladle/ladle.go:399	Initting Stolon instances...
-2022-01-13T11:58:54.640Z	INFO	ladle/ladle.go:483	Waiting for Stolon daemons to start... make sure bowl daemons are running on the nodes
+2022-09-16T09:02:18.306Z	INFO	ladle/ladle.go:387	Checking if shardmand on all nodes have applied current cluster configuration
+2022-09-16T09:02:18.308Z	INFO	ladle/ladle.go:414	Initting Stolon instances...
+2022-09-16T09:02:19.214Z	INFO	ladle/ladle.go:498	Waiting for Stolon daemons to start... make sure shardmand daemons are running on the nodes
+.........................................
 2022-01-13T11:59:25.820Z	INFO	ladle/ladle.go:559	Adding repgroups...
+.........................................
 2022-01-13T11:59:39.252Z	INFO	ladle/ladle.go:586	Successfully added nodes b0e479b46867, 64f3d9a22fca, 7eab74c472a6, 9933d8eeef9a to the cluster
 
 psql -h 127.0.0.1 -p 8432 -U postgres
+select pgpro_version();
+                                                    pgpro_version
+---------------------------------------------------------------------------------------------------------------------
+ PostgresPro (shardman) 14.4.9 on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 9.4.0-1ubuntu1~20.04.1) 9.4.0, 64-bit
 ```
 
 Delete all containers, before re-run after major changes:
@@ -240,7 +247,7 @@ then get nodes names and add them to Shardman cluster.
 Scale down: firstly, remove nodes from the cluster
 
 ```shell
-docker exec sdm_shard_1 shardman-ladle rmnodes -n node_name_1,node_name_2,...
+docker exec sdm_shard_1 shardmanctl nodes rm -n node_name_1,node_name_2,...
 ```
 
 then run 

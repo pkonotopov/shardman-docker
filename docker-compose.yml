@@ -19,7 +19,7 @@ services:
       - '--initial-cluster=etcd=http://etcd:2380'
 
   shard: &shard
-    image: quay.io/kakoka/shardman:14.4.7
+    image: quay.io/kakoka/shardman:14.4.9
     labels: &labels
       com.shardman.role: shard
       com.shardman.main: true
