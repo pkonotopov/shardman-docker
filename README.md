@@ -3,7 +3,7 @@
 <h1>Shardman in docker</h1>
 
 * Clone repo: `git clone git@github.com:pkonotopov/shardman-docker.git shardman`
-* Shardman 14.4.6 documentation: [http://repo.postgrespro.ru/doc/pgprosm/14.4.9/en/html](http://repo.postgrespro.ru/doc/pgprosm/14.4.6/en/html)
+* Latest Shardman documentation: [http://repo.postgrespro.ru/doc/pgprosm/14.4.9/en/html](http://repo.postgrespro.ru/doc/pgprosm/14.4.6/en/html)
 * Inital cluster config in [spec.json](conf/spec.json) file: one node, no replication, no monitor. 
 * Inital cluster config with shards replication [spec_replication.json](conf/spec_replication.json) file: every shard has replica, monitor enabled. 
 * Limitations:
