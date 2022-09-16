@@ -5,11 +5,12 @@
 * Clone repo: `git clone git@github.com:pkonotopov/shardman-docker.git shardman`
 * Latest Shardman documentation: [http://repo.postgrespro.ru/doc/pgprosm/14.4.9/en/html](http://repo.postgrespro.ru/doc/pgprosm/14.4.6/en/html)
 * Inital cluster config in [spec.json](conf/spec.json) file: one node, no replication, no monitor. 
-* Inital cluster config with shards replication [spec_replication.json](conf/spec_replication.json) file: every shard has replica, monitor enabled. 
+* Inital cluster config with shards replication [spec-replication.json](conf/spec-replication.json) file: every shard has replica, monitor enabled. 
+* Inital cluster config with Shardman transport enabled [spec-silk.json](conf/spec-silk.json) file: every shard has replica, monitor enabled. 
 * Limitations:
-  * Linux systems Ubuntu/Centos/Debian - tested.
+  * Linux systems Ubuntu/Centos/MacOS - tested.
   * For MacOS see the chapter #9 - [Run containers with the systemd on MacOS](#9-run-containers-with-systemd-on-macos).
-  * WSL - not tested.
+  * WSL/WSL2 - not tested.
 
 - [1. Quck start](#1-quck-start)
 - [2. Quck build your own image](#2-quck-build-your-own-image)
@@ -164,7 +165,7 @@ If you want to create cluster with replicas and monitors you should change some 
 }
 ```
 
-or use the prepared [spec_replication.json](conf/spec_replication.json) file.
+or use the prepared [spec-replication.json](conf/spec-replication.json) file.
 If you want to change any cluster parameters you can make changes in the `spec.json` file.
 Then at the Up step (1.1) run cluster with minimal nodes count 2. We are using 4 shards: 
 
@@ -204,8 +205,8 @@ docker-compose -f docker-compose-traefik.yml up -d --scale shard=4
 Create configuration and add nodes to the cluster:
 
 - [spec.json](conf/spec.json) - simple Shardman cluster configuration _without_ shard replication (HA)
-- [spec-silk.json](conf/spec-silk.json) - simple Shardman cluster configuration _without_ shard replication (HA) and with shardman transport enabled -[A New Approach to Sharding for Distributed PostgreSQL](https://postgrespro.com/blog/pgsql/5969681)
 - [spec-replication.json](conf/spec-replication.json) simple Shardman cluster configuration _with_ shard replication (HA)
+- [spec-silk.json](conf/spec-silk.json) - simple Shardman cluster configuration _without_ shard replication (HA) and with shardman transport enabled -[A New Approach to Sharding for Distributed PostgreSQL](https://postgrespro.com/blog/pgsql/5969681)
 
 Pick configuration you want. For the local deployment (i.e. docker compose) we recomend to use shards _without_ replication.
 
