@@ -18,30 +18,36 @@ services:
       - '--listen-client-urls=http://0.0.0.0:2379'
       - '--initial-cluster=etcd=http://etcd:2380'
 
-  shard: &shard
-    image: quay.io/kakoka/shardman:14.4.9
-    labels: &labels
+  shard:
+    &shard
+    image: quay.io/kakoka/shardman:14.5.1
+    labels:
+      &labels
       com.shardman.role: shard
       com.shardman.main: true
-    cap_add: ["SYS_ADMIN",]
-    tmpfs: &tmpfs
+    cap_add: [ "SYS_ADMIN" ]
+    tmpfs:
+      &tmpfs
       - /run
       - /run/lock
-    volumes: &volumes
+    volumes:
+      &volumes
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
       - $PWD/conf:/etc/shardman:ro
-    environment: &ETCD
+    environment:
+      &ETCD
       CLUSTER_NAME: "cluster0"
       SDM_CLUSTER_NAME: "cluster0"
       SDM_LOG_LEVEL: "info"
       SDM_STORE_ENDPOINTS: "http://etcd:2379"
     expose:
       - 5432
-    ports: &ports
+    ports:
+      &ports
       - 5432:5432
 
-  shards: 
-    << : *shard
+  shards:
+    <<: *shard
     labels:
       com.shardman.role: shard
     ports: []

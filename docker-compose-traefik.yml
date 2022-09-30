@@ -44,8 +44,9 @@ services:
       - '--listen-client-urls=http://0.0.0.0:2379'
       - '--initial-cluster=etcd=http://etcd:2380'
 
-  shard: &shard
-    image: quay.io/kakoka/shardman:14.4.9
+  shard:
+    &shard
+    image: quay.io/kakoka/shardman:14.5.1
     labels:
       com.shardman.role: shard
       traefik.enable: 'true'
@@ -61,7 +62,8 @@ services:
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
       - $PWD/conf:/etc/shardman:ro
-    environment: &ETCD
+    environment:
+      &ETCD
       CLUSTER_NAME: "cluster0"
       SDM_CLUSTER_NAME: "cluster0"
       SDM_LOG_LEVEL: "info"
