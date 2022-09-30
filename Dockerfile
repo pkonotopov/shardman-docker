@@ -1,6 +1,6 @@
 FROM ubuntu:20.04
 
-LABEL shardman_build=14.4.9
+LABEL shardman_build=14.5.1
 ARG PG_MAJOR=14
 ARG PGHOME=/var/lib/pgpro
 ARG LC_ALL=C.UTF-8
@@ -27,17 +27,17 @@ RUN ulimit -s unlimited \
     # && curl -fsSL http://repo.l.postgrespro.ru/keys/GPG-KEY-POSTGRESPRO | apt-key add - \
     && apt-get update -y \
     && apt-get install -y --no-install-recommends \
-        systemd-sysv libicu66 libev4 libpam0g libssl1.1 libxml2 tzdata \
-        ssl-cert locales dbus-x11 libipc-run-perl \
-        libreadline8 pkg-config zlib1g \
-        postgrespro-sdm-${PG_MAJOR}-server \
-        postgrespro-sdm-${PG_MAJOR}-client \
-        postgrespro-sdm-${PG_MAJOR}-contrib \
-        postgrespro-sdm-${PG_MAJOR}-libs \
-        postgrespro-sdm-${PG_MAJOR}-backup-src \
-        shardman-services \
-        shardman-tools \
-        stolon-sdm \
+    systemd-sysv libicu66 libev4 libpam0g libssl1.1 libxml2 tzdata \
+    ssl-cert locales dbus-x11 libipc-run-perl \
+    libreadline8 pkg-config zlib1g \
+    postgrespro-sdm-${PG_MAJOR}-server \
+    postgrespro-sdm-${PG_MAJOR}-client \
+    postgrespro-sdm-${PG_MAJOR}-contrib \
+    postgrespro-sdm-${PG_MAJOR}-libs \
+    postgrespro-sdm-${PG_MAJOR}-backup-src \
+    shardman-services \
+    shardman-tools \
+    stolon-sdm \
     && mkdir -p /etc/systemd/system/systemd-logind.service.d /etc/shardman \
     && chown postgres:postgres /etc/shardman -R \
     && sed -i 's/var\/lib\/pgpro\/sdm-14\/data/etc\/shardman/g' /usr/lib/systemd/system/shardmand\@.service \
@@ -46,11 +46,11 @@ RUN ulimit -s unlimited \
     && apt-get autoremove -y \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/* \
-        /root/.cache \
-        /var/cache/debconf/* \
-        /usr/share/doc* \
-        /usr/share/man \
-        /tmp/*.deb \
+    /root/.cache \
+    /var/cache/debconf/* \
+    /usr/share/doc* \
+    /usr/share/man \
+    /tmp/*.deb \
     && find /var/log -type f -exec truncate --size 0 {} \;
 
 ENV PATH "/opt/pgpro/sdm-$PG_MAJOR/bin:${PATH}"
