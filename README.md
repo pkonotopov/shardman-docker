@@ -3,7 +3,7 @@
 <h1>Shardman in docker</h1>
 
 * Clone repo: `git clone git@github.com:pkonotopov/shardman-docker.git shardman`
-* Latest Shardman documentation: [http://repo.postgrespro.ru/doc/pgprosm/14.5.1/en/html](http://repo.postgrespro.ru/doc/pgprosm/14.5.1/en/html)
+* Latest Shardman documentation: [http://repo.postgrespro.ru/doc/pgprosm/14.5.2/en/html](http://repo.postgrespro.ru/doc/pgprosm/14.5.2/en/html)
 * Inital cluster config in [spec.json](conf/spec.json) file: one sard node, no replication, no monitor. 
 * Inital cluster config with shards replication [spec-replication.json](conf/spec-replication.json) file: every shard has replica, monitor enabled. 
 * Inital cluster config with Shardman transport enabled [spec-silk.json](conf/spec-silk.json) file: one sard node, no replication, no monitor. 
@@ -227,7 +227,7 @@ psql -h 127.0.0.1 -p 8432 -U postgres
 select pgpro_version();
                                                     pgpro_version
 ---------------------------------------------------------------------------------------------------------------------
- PostgresPro (shardman) 14.5.1 on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 9.4.0-1ubuntu1~20.04.1) 9.4.0, 64-bit
+ PostgresPro (shardman) 14.5.2 on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 9.4.0-1ubuntu1~20.04.1) 9.4.0, 64-bit
 ```
 
 Delete all containers, before re-run after major changes:

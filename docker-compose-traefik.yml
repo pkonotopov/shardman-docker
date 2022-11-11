@@ -46,7 +46,7 @@ services:
 
   shard:
     &shard
-    image: quay.io/kakoka/shardman:14.5.1
+    image: quay.io/kakoka/shardman:14.5.2
     labels:
       com.shardman.role: shard
       traefik.enable: 'true'
