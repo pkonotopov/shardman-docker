@@ -4,7 +4,8 @@ services:
 
   etcd:
     hostname: etcd
-    image: quay.io/coreos/etcd:v3.5.4
+    image: quay.io/coreos/etcd:v3.5.6
+    platform: linux/amd64
     labels:
       com.shardman.role: etcd
     volumes:
@@ -20,7 +21,8 @@ services:
 
   shard:
     &shard
-    image: quay.io/kakoka/shardman:14.6.1
+    image: quay.io/kakoka/shardman:14.7.1
+    platform: linux/amd64
     labels:
       &labels
       com.shardman.role: shard
@@ -33,7 +35,8 @@ services:
     volumes:
       &volumes
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
-      - $PWD/conf:/etc/shardman:ro
+      - $PWD/conf/spec.json:/etc/shardman/spec.json:ro
+      - $PWD/conf/shardmand-cluster0.env:/etc/shardman/shardmand-cluster0.env:ro
     environment:
       &ETCD
       CLUSTER_NAME: "cluster0"

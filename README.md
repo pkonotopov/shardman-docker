@@ -3,7 +3,7 @@
 <h1>Shardman in docker</h1>
 
 * Clone repo: `git clone git@github.com:pkonotopov/shardman-docker.git shardman`
-* Latest Shardman documentation: [http://repo.postgrespro.ru/doc/pgprosm/14.6.1/en/html](http://repo.postgrespro.ru/doc/pgprosm/14.6.1/en/html)
+* Latest Shardman documentation: [http://repo.postgrespro.ru/doc/pgprosm/14.7.1/en/html](http://repo.postgrespro.ru/doc/pgprosm/14.7.1/en/html)
 * Inital cluster config in [spec.json](conf/spec.json) file: one sard node, no replication, no monitor. 
 * Inital cluster config with shards replication [spec-replication.json](conf/spec-replication.json) file: every shard has replica, monitor enabled. 
 * Inital cluster config with Shardman transport enabled [spec-silk.json](conf/spec-silk.json) file: one sard node, no replication, no monitor. 
@@ -41,8 +41,8 @@ After cloning shardman-docker repo please execute these steps.
 
 ```shell
 docker compose -f docker-compose.yml up -d --scale shards=3 --no-recreate
-docker exec sdm_shard_1 shardmanctl init -f /etc/shardman/spec.json
-docker exec sdm_shard_1 shardmanctl nodes add -n $(docker ps --filter "label=com.shardman.role=shard" -aq | awk '{aggr=aggr $1","} END {print aggr}' | rev | cut -c 2- | rev)
+docker exec sdm_shard_1 shardmanctl init -f /etc/shardman/spec.json --log-level debug
+docker exec sdm_shard_1 shardmanctl nodes add -n $(docker ps --filter "label=com.shardman.role=shard" -aq | awk '{aggr=aggr $1","} END {print aggr}' | rev | cut -c 2- | rev) --log-level debug
 
 # Connect to database
 psql -h 127.1 -U postgres
@@ -77,7 +77,7 @@ This command bring up three containers: `sdm_etcd_1` and `sdm_shard_1`, `sdm_sha
 ### 3.2 Initialization
 
 ```shell
-docker exec sdm_shard_1 shardmanclt init -f /etc/shardman/spec.json
+docker exec sdm_shard_1 shardmanctl init -f /etc/shardman/spec.json
 ```
 
 This command uploads initial configuraion into the etcd k/v storage.
@@ -113,7 +113,7 @@ psql -h 127.0.0.1 -p 5432 -U postgres
 ### 4.1 Create new containers
 
 ```shell
-docker-compose -f docker-compose-one-node.yml up -d --scale shards=3 --no-recreate
+docker-compose -f docker-compose.yml up -d --scale shards=3 --no-recreate
 ```
 
 ### 4.2 Get containers hostnames
@@ -165,7 +165,6 @@ If you want to create cluster with replicas and monitors you should change some 
 }
 ```
 
-or use the prepared [spec-replication.json](conf/spec-replication.json) file.
 If you want to change any cluster parameters you can make changes in the `spec.json` file.
 Then at the Up step (1.1) run cluster with minimal nodes count 2. We are using 4 shards: 
 
@@ -203,12 +202,8 @@ docker-compose -f docker-compose-traefik.yml up -d --scale shard=4
 ```
 
 Create configuration and add nodes to the cluster:
-
 - [spec.json](conf/spec.json) - simple Shardman cluster configuration _without_ shard replication (HA)
-- [spec-replication.json](conf/spec-replication.json) simple Shardman cluster configuration _with_ shard replication (HA)
-- [spec-silk.json](conf/spec-silk.json) - simple Shardman cluster configuration _without_ shard replication (HA) and with shardman transport enabled -[A New Approach to Sharding for Distributed PostgreSQL](https://postgrespro.com/blog/pgsql/5969681)
-
-Pick configuration you want. For the local deployment (i.e. docker compose) we recomend to use shards _without_ replication.
+For the docker deployment (i.e. docker compose) we recomend to use shards _without_ replication.
 
 ```shell
 docker exec sdm_shard_1 shardmanctl init -f /etc/shardman/spec.json
@@ -227,7 +222,7 @@ psql -h 127.0.0.1 -p 8432 -U postgres
 select pgpro_version();
                                                     pgpro_version
 ---------------------------------------------------------------------------------------------------------------------
- PostgresPro (shardman) 14.6.1 on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 9.4.0-1ubuntu1~20.04.1) 9.4.0, 64-bit
+ PostgresPro (shardman) 14.7.1 on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 9.4.0-1ubuntu1~20.04.1) 9.4.0, 64-bit
 ```
 
 Delete all containers, before re-run after major changes:
@@ -272,7 +267,7 @@ To get logs from needed shard:
 docker exec -it sdm_shard_1 journalctl -f
 ```
 
-To configure PostgreSQL logging please make changes in [spec](conf/spec.json) - `pgParameters` section before cluster initialization (`shardman-ladel init`).
+To configure PostgreSQL logging please make changes in [spec](conf/spec.json) - `pgParameters` section before cluster initialization (`shardmanctl init -f /etc/shardman/spec.json`).
 
 ## 9. Run containers with systemd on MacOS
 
