@@ -4,7 +4,7 @@
 
 * Clone repo: `git clone git@github.com:pkonotopov/shardman-docker.git shardman`
 * Latest Shardman documentation: [http://repo.postgrespro.ru/doc/pgprosm/14.9.2/en/html](http://repo.postgrespro.ru/doc/pgprosm/14.9.2/en/html)
-* Inital cluster config in [spec.json](conf/spec.json) file: one sard node, no replication, no monitor. 
+* Inital cluster config in [spec.json](conf/spec.json) file: one shard - one node, no replication, no monitor. 
 * Inital cluster config with shards replication [spec-replication.json](conf/spec-replication.json) file: every shard has replica, monitor enabled. 
 * Inital cluster config with Shardman transport enabled [spec-silk.json](conf/spec-silk.json) file: one sard node, no replication, no monitor. 
 * Limitations:
