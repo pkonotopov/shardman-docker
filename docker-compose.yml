@@ -21,7 +21,7 @@ services:
 
   shard:
     &shard
-    image: shardman:14.9.2
+    image: quay.io/kakoka/shardman:14.9.4
     platform: linux/amd64
     labels:
       &labels
