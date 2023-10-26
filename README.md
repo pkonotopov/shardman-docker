@@ -3,7 +3,7 @@
 <h1>Shardman in docker</h1>
 
 * Clone repo: `git clone git@github.com:pkonotopov/shardman-docker.git shardman`
-* Latest Shardman documentation: [http://repo.postgrespro.ru/doc/pgprosm/14.7.4/en/html](http://repo.postgrespro.ru/doc/pgprosm/14.7.4/en/html)
+* Latest Shardman documentation: [http://repo.postgrespro.ru/doc/pgprosm/14.9.2/en/html](http://repo.postgrespro.ru/doc/pgprosm/14.9.2/en/html)
 * Inital cluster config in [spec.json](conf/spec.json) file: one sard node, no replication, no monitor. 
 * Inital cluster config with shards replication [spec-replication.json](conf/spec-replication.json) file: every shard has replica, monitor enabled. 
 * Inital cluster config with Shardman transport enabled [spec-silk.json](conf/spec-silk.json) file: one sard node, no replication, no monitor. 
@@ -42,10 +42,10 @@ After cloning shardman-docker repo please execute these steps.
 ```shell
 docker compose -f docker-compose.yml up -d --scale shards=3 --no-recreate
 docker exec sdm_shard_1 shardmanctl init -f /etc/shardman/spec.json --log-level debug
-docker exec sdm_shard_1 shardmanctl nodes add -n $(docker ps --filter "label=com.shardman.role=shard" -aq | awk '{aggr=aggr $1","} END {print aggr}' | rev | cut -c 2- | rev) --log-level debug
+docker exec sdm_shard_1 shardmanctl nodes add -n $(docker ps --filter "label=com.shardman.role=shard" -aq | awk '{aggr=aggr $1","} END {print aggr}' | rev | cut -c 2- | rev) --log-level debug --yes
 
 # Connect to database
-psql -h 127.1 -U postgres
+psql -h 127.0.0.1 -U postgres
 
 ```
 
@@ -159,8 +159,7 @@ If you want to create cluster with replicas and monitors you should change some 
 ```json
 {
 ...
-"Repfactor": 1,
-"MonitorsNum": 1
+"Repfactor": 1
 ...
 }
 ```
@@ -206,7 +205,7 @@ Create configuration and add nodes to the cluster:
 For the docker deployment (i.e. docker compose) we recomend to use shards _without_ replication.
 
 ```shell
-docker exec sdm_shard_1 shardmanctl init -f /etc/shardman/spec.json
+docker exec sdm_shard_1 shardmanctl init -f /etc/shardman/spec.json --yes
 
 docker exec sdm_shard_1 shardmanctl nodes add -n $(docker ps --filter "label=com.shardman.role=shard" -aq | awk '{aggr=aggr $1","} END {print aggr}' | rev | cut -c 2- | rev)
 
@@ -222,7 +221,7 @@ psql -h 127.0.0.1 -p 8432 -U postgres
 select pgpro_version();
                                                     pgpro_version
 ---------------------------------------------------------------------------------------------------------------------
- PostgresPro (shardman) 14.7.4 on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 9.4.0-1ubuntu1~20.04.1) 9.4.0, 64-bit
+ PostgresPro (shardman) 14.9.2 on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 9.4.0-1ubuntu1~20.04.2) 9.4.0, 64-bit
 ```
 
 Delete all containers, before re-run after major changes:
