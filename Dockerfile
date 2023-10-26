@@ -1,6 +1,6 @@
 FROM ubuntu:20.04
 
-LABEL shardman_build=14.7.4
+LABEL shardman_build=14.9.2
 ARG PG_MAJOR=14
 ARG PGHOME=/var/lib/pgpro
 ARG LC_ALL=C.UTF-8

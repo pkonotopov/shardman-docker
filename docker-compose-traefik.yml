@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   traefik:
-    image: traefik:v2.9.8
+    image: traefik:v2.10.5
     platform: linux/amd64
     hostname: traefik
     command:
@@ -33,7 +33,7 @@ services:
 
   etcd:
     hostname: etcd
-    image: quay.io/coreos/etcd:v3.5.6
+    image: quay.io/coreos/etcd:v3.5.9
     platform: linux/amd64
     labels:
       com.shardman.role: etcd
@@ -48,7 +48,7 @@ services:
 
   shard:
     &shard
-    image: quay.io/kakoka/shardman:14.7.4
+    image: quay.io/kakoka/shardman:14.9.2
     platform: linux/amd64
     labels:
       com.shardman.role: shard
