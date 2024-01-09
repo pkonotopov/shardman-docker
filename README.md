@@ -3,7 +3,7 @@
 <h1>Shardman in docker</h1>
 
 * Clone repo: `git clone git@github.com:pkonotopov/shardman-docker.git shardman`
-* Latest Shardman documentation: [http://repo.postgrespro.ru/doc/pgprosm/14.9.2/en/html](http://repo.postgrespro.ru/doc/pgprosm/14.9.2/en/html)
+* Latest Shardman documentation: [http://repo.postgrespro.ru/doc/pgprosm/14.10.1/en/html](http://repo.postgrespro.ru/doc/pgprosm/14.10.1/en/html)
 * Inital cluster config in [spec.json](conf/spec.json) file: one shard - one node, no replication, no monitor. 
 * Limitations:
   * Linux systems Ubuntu/Centos/MacOS - tested.
@@ -39,8 +39,8 @@ After cloning shardman-docker repo please execute these steps.
 
 ```shell
 docker compose -f docker-compose.yml up -d --scale shards=3 --no-recreate
-docker exec sdm_shard_1 shardmanctl init -f /etc/shardman/spec.json --log-level debug
-docker exec sdm_shard_1 shardmanctl nodes add -n $(docker ps --filter "label=com.shardman.role=shard" -aq | awk '{aggr=aggr $1","} END {print aggr}' | rev | cut -c 2- | rev) --log-level debug --yes
+docker exec sdm_shard_1 shardmanctl init -f /etc/shardman/spec.json --log-level debug -y
+docker exec sdm_shard_1 shardmanctl nodes add -n $(docker ps --filter "label=com.shardman.role=shard" -aq | awk '{aggr=aggr $1","} END {print aggr}' | rev | cut -c 2- | rev) --log-level debug
 
 # Connect to database
 psql -h 127.0.0.1 -U postgres
@@ -75,7 +75,7 @@ This command bring up three containers: `sdm_etcd_1` and `sdm_shard_1`, `sdm_sha
 ### 3.2 Initialization
 
 ```shell
-docker exec sdm_shard_1 shardmanctl init -f /etc/shardman/spec.json
+docker exec sdm_shard_1 shardmanctl init -f /etc/shardman/spec.json -y
 ```
 
 This command uploads initial configuraion into the etcd k/v storage.
@@ -205,8 +205,12 @@ For the docker deployment (i.e. docker compose) we recomend to use shards _witho
 ```shell
 docker exec sdm_shard_1 shardmanctl init -f /etc/shardman/spec.json --yes
 
-docker exec sdm_shard_1 shardmanctl nodes add -n $(docker ps --filter "label=com.shardman.role=shard" -aq | awk '{aggr=aggr $1","} END {print aggr}' | rev | cut -c 2- | rev)
+docker exec sdm_shard_1 shardmanctl nodes add -n $(docker ps --filter "label=com.shardman.role=shard" -aq | awk '{aggr=aggr $1","} END {print aggr}' | rev | cut -c 2- | rev) --log-level debug
+```
 
+Expected output:
+
+```shell
 2022-09-16T09:02:18.306Z	INFO	ladle/ladle.go:387	Checking if shardmand on all nodes have applied current cluster configuration
 2022-09-16T09:02:18.308Z	INFO	ladle/ladle.go:414	Initting Stolon instances...
 2022-09-16T09:02:19.214Z	INFO	ladle/ladle.go:498	Waiting for Stolon daemons to start... make sure shardmand daemons are running on the nodes
@@ -214,12 +218,14 @@ docker exec sdm_shard_1 shardmanctl nodes add -n $(docker ps --filter "label=com
 2022-01-13T11:59:25.820Z	INFO	ladle/ladle.go:559	Adding repgroups...
 .........................................
 2022-01-13T11:59:39.252Z	INFO	ladle/ladle.go:586	Successfully added nodes b0e479b46867, 64f3d9a22fca, 7eab74c472a6, 9933d8eeef9a to the cluster
+```
 
+```shell
 psql -h 127.0.0.1 -p 8432 -U postgres
 select pgpro_version();
                                                     pgpro_version
 ---------------------------------------------------------------------------------------------------------------------
- PostgresPro (shardman) 14.9.2 on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 9.4.0-1ubuntu1~20.04.2) 9.4.0, 64-bit
+ PostgresPro (shardman) 14.10.1 on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 9.4.0-1ubuntu1~20.04.2) 9.4.0, 64-bit
 ```
 
 Delete all containers, before re-run after major changes:
