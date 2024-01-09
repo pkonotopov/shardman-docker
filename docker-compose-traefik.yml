@@ -48,8 +48,7 @@ services:
 
   shard:
     &shard
-    # image: quay.io/kakoka/shardman:14.10.1
-    image: shardman:14.10.1
+    image: quay.io/kakoka/shardman:14.10.1
     platform: linux/amd64
     labels:
       com.shardman.role: shard
