@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1
+# syntax=quay.io/kakoka/dockerfile:1
 FROM ubuntu:22.04
 
 LABEL shardman_build=14.10.1
